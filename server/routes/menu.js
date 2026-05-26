@@ -26,7 +26,15 @@ router.get('/', async (req, res) => {
     const items = await prisma.menuItem.findMany({ 
       where: { isAvailable: true, isDeleted: false } 
     });
-    const categories = [...new Set(items.map(i => i.category))];
+    let categories = [...new Set(items.map(i => i.category))];
+    const categoryOrder = ['Starters', 'Mains', 'Artisan Pizza', 'Desserts', 'Drinks', 'Premium Wines'];
+    categories.sort((a, b) => {
+      let indexA = categoryOrder.indexOf(a);
+      let indexB = categoryOrder.indexOf(b);
+      if (indexA === -1) indexA = 999;
+      if (indexB === -1) indexB = 999;
+      return indexA - indexB;
+    });
     res.json({ categories, items });
   } catch (err) {
     res.status(500).json({ error: 'Database error' });
