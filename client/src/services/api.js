@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-export const BACKEND_URL = 'https://trodden-scoreless-schnapps.ngrok-free.dev';
+// Use relative path '/api' in production so it points to Render itself
+// Use ngrok for local development fallback if needed
+export const BACKEND_URL = window.location.hostname.includes('ngrok') ? 'https://trodden-scoreless-schnapps.ngrok-free.dev' : '';
 
 const api = axios.create({
-  // Use the ngrok URL for the deployed Netlify demo to connect back to your local computer
   baseURL: `${BACKEND_URL}/api`,
   headers: { 
     'Content-Type': 'application/json',
