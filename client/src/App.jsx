@@ -6,6 +6,7 @@ import ReservationPage from './pages/ReservationPage';
 import BookingCheckoutPage from './pages/BookingCheckoutPage';
 import StoryPage from './pages/StoryPage';
 import EventsPage from './pages/EventsPage';
+import AdminDashboard from './pages/AdminDashboard';
 
 export default function App() {
   return (
@@ -20,6 +21,9 @@ export default function App() {
             <Route path="/pos" element={<POSPage />} />
             <Route path="/story" element={<StoryPage />} />
             <Route path="/events" element={<EventsPage />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminDashboard />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" />} />

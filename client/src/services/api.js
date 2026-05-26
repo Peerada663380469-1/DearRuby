@@ -29,4 +29,16 @@ api.interceptors.response.use(
   }
 );
 
+export const apiService = {
+  events: {
+    inquire: (data) => api.post('/events/inquiry', data),
+    getInquiries: (adminKey) => api.get('/events/inquiries', { headers: { 'x-admin-key': adminKey } })
+  },
+
+  // Admin Routes
+  admin: {
+    getReservations: (adminKey) => api.get('/reservations', { headers: { 'x-admin-key': adminKey } }),
+  }
+};
+
 export default api;
