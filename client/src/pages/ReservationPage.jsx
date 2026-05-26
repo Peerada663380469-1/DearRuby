@@ -203,7 +203,7 @@ export default function ReservationPage() {
                     <div className="service-desc">(For more than 6 pax, please contact us directly at 043 100 555)</div>
                     <div className="service-desc" style={{ marginTop: 8 }}>Facebook: Peerada Mod or Email:<br/>reservations@dearruby.co</div>
                   </div>
-                  <img className="service-img" src="https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&w=800&q=80" alt="Outdoor Zone" />
+                  <img className="service-img" src="/images/outdoor_rooftop_city_night.png" alt="Outdoor Zone" />
                 </div>
                 
                 <div className="service-row" onClick={() => { setServiceType('indoor'); handleBook('indoor'); }}>
@@ -214,7 +214,7 @@ export default function ReservationPage() {
                     <div className="service-desc">(For more than 6 pax, please contact us directly at 043 100 555)</div>
                     <div className="service-desc" style={{ marginTop: 8 }}>Facebook: Peerada Mod or Email:<br/>reservations@dearruby.co</div>
                   </div>
-                  <img className="service-img" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80" alt="Indoor Zone" />
+                  <img className="service-img" src="/images/indoor_luxury_night.png" alt="Indoor Zone" />
                 </div>
               </div>
             </motion.div>
