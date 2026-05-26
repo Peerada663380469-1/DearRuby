@@ -22,16 +22,15 @@ function getTransporter() {
 
   console.log(`📧 Email transporter config -> host=${host}, port=${port}, user=${user}`);
 
-  // Use Gmail shortcut if host contains gmail (auto TLS handling)
-  // Force explicit SMTP configuration (avoid Gmail shortcut which may try IPv6/port 465)
+  // Force explicit SMTP configuration with port 465 to avoid timeouts on Render
   const transportOptions = {
     host,
-    port: parseInt(port || '587', 10),
-    secure: false, // use STARTTLS on port 587
+    port: parseInt(port || '465', 10), // Use 465 if port is missing
+    secure: true, // Use TLS (true for 465, false for 587)
     auth: { user, pass },
     // Force IPv4 (Render sometimes cannot reach IPv6 smtp.gmail.com)
     family: 4,
-    // Nodemailer will upgrade to TLS via STARTTLS automatically
+    // Nodemailer will upgrade to TLS via STARTTLS automatically on 587, but for 465 it connects securely immediately
     tls: {
       // Allow self‑signed certs just in case (Render's egress)
       rejectUnauthorized: false
