@@ -21,7 +21,6 @@
     "jimp": "^1.6.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.1.1",
-    "resend": "^6.12.4",
     "sanitize-html": "^2.17.4"
   },
   "devDependencies": {

@@ -1,8 +1,4 @@
-import { Resend } from 'resend';
 import 'dotenv/config';
-
-// Hardcoded API key provided by user to bypass Render environment variable setup
-const resend = new Resend('re_LyRatH9C_DFtUYBE3wk93RjCDvW9D7uM9');
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'THB' }).format(amount);
@@ -110,24 +106,47 @@ export async function sendBookingConfirmation(reservation) {
     </div>
   `;
 
-  // Hardcoded API key used, no need to mock
+  if (!process.env.BREVO_API_KEY) {
+    console.log("-----------------------------------------");
+    console.log(`[MOCK EMAIL TO: ${to}]`);
+    console.log(`Subject: ${subject}`);
+    console.log(`(Configure BREVO_API_KEY to send real emails.)`);
+    console.log("-----------------------------------------");
+    return;
+  }
 
   try {
-    const data = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-      to: [to],
-      subject,
-      html
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { 
+          name: 'Dear Ruby', 
+          email: 'peeradamod43848@gmail.com' 
+        },
+        to: [{ email: to }],
+        subject: subject,
+        htmlContent: html
+      })
     });
-    console.log(`Email sent successfully via Resend to ${to}`, data);
+    
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(JSON.stringify(data));
+    }
+    console.log(`Email sent successfully via Brevo to ${to}`, data);
   } catch (error) {
-    console.error(`Failed to send email to ${to} via Resend:`, error);
+    console.error(`Failed to send email to ${to} via Brevo:`, error);
     throw error;
   }
 }
 
 export async function sendEventInquiryNotification(inquiry) {
-  const to = process.env.SMTP_USER || 'admin@dearruby.co'; // Fallback to an admin email
+  const to = 'peeradamod43848@gmail.com'; // Send to admin
   const customerEmail = inquiry.email;
   const subject = `New Private Event Inquiry - ${inquiry.firstName} ${inquiry.lastName}`;
   
@@ -149,18 +168,37 @@ export async function sendEventInquiryNotification(inquiry) {
     </div>
   `;
 
-  // Hardcoded API key used, no need to mock
+  if (!process.env.BREVO_API_KEY) {
+    console.log(`[MOCK INQUIRY EMAIL] New event inquiry from ${customerEmail}`);
+    return;
+  }
 
   try {
-    const data = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-      to: [to],
-      reply_to: customerEmail,
-      subject,
-      html
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { 
+          name: 'Dear Ruby', 
+          email: 'peeradamod43848@gmail.com' 
+        },
+        to: [{ email: to }],
+        replyTo: { email: customerEmail },
+        subject: subject,
+        htmlContent: html
+      })
     });
-    console.log(`Inquiry notification sent to admin via Resend`, data);
+    
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(JSON.stringify(data));
+    }
+    console.log(`Inquiry notification sent to admin via Brevo`, data);
   } catch (error) {
-    console.error(`Failed to send inquiry notification via Resend:`, error);
+    console.error(`Failed to send inquiry notification via Brevo:`, error);
   }
 }
