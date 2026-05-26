@@ -135,6 +135,11 @@ input, select, textarea { font-family: var(--font); outline: none; }
 /* ===== STORY PAGE ===== */
 .experience-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; max-width: 1400px; margin: 0 auto; }
 
+/* ===== EVENTS PAGE ===== */
+.events-hero { padding: 80px 48px; text-align: center; }
+.events-content { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.events-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
 /* ===== BUTTONS ===== */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -612,4 +617,9 @@ input, select, textarea { font-family: var(--font); outline: none; }
   .experience-gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 16px; scrollbar-width: none; gap: 16px; padding-left: 16px; padding-right: 16px; }
   .experience-gallery::-webkit-scrollbar { display: none; }
   .experience-gallery > div { flex: 0 0 85%; scroll-snap-align: center; }
+
+  /* Events Page Overrides */
+  .events-hero { padding: 48px 24px; }
+  .events-content { padding: 32px 16px; display: flex; flex-direction: column; gap: 32px; }
+  .events-form-row { grid-template-columns: 1fr; gap: 16px; }
 }

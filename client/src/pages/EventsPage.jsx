@@ -60,7 +60,7 @@ export default function EventsPage() {
       <Navbar />
 
       {/* Hero */}
-      <div style={{ padding: '80px 48px', textAlign: 'center', background: 'url("https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1920&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+      <div className="events-hero" style={{ background: 'url("https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1920&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.7)' }}></div>
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 800, margin: '0 auto', color: '#F6F4EE' }}>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '3.5rem', fontWeight: 400, marginBottom: 24 }}>Private Events</h1>
@@ -71,7 +71,7 @@ export default function EventsPage() {
       </div>
 
       {/* Content */}
-      <div style={{ padding: '80px 48px', maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'start' }}>
+      <div className="events-content mobile-col" style={{ maxWidth: 1200, margin: '0 auto', alignItems: 'start' }}>
         
         {/* Info */}
         <div>
@@ -115,7 +115,7 @@ export default function EventsPage() {
             <>
               <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.8rem', fontWeight: 500, marginBottom: 32, color: '#F6F4EE' }}>Request a Quote</h3>
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                <div className="events-form-row">
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#C8C4B7', marginBottom: 8, letterSpacing: '0.5px' }}>First Name</label>
                     <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.05)', color: '#F6F4EE', border: '1px solid rgba(246, 244, 238, 0.15)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font)' }} />
@@ -126,7 +126,7 @@ export default function EventsPage() {
                   </div>
                 </div>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                <div className="events-form-row">
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#C8C4B7', marginBottom: 8, letterSpacing: '0.5px' }}>Email</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} required style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.05)', color: '#F6F4EE', border: '1px solid rgba(246, 244, 238, 0.15)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font)' }} />
@@ -137,7 +137,7 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                <div className="events-form-row">
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#C8C4B7', marginBottom: 8, letterSpacing: '0.5px' }}>Est. Guest Count</label>
                     <input type="number" name="guests" min="1" value={formData.guests} onChange={handleChange} required style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.05)', color: '#F6F4EE', border: '1px solid rgba(246, 244, 238, 0.15)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font)' }} />
