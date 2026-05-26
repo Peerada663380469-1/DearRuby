@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Instagram, Facebook, Youtube, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -95,8 +96,8 @@ export default function Footer() {
       </footer>
 
       {/* Policy Modal */}
-      {activeModal && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', padding: '20px' }} onClick={() => setActiveModal(null)}>
+      {activeModal && createPortal(
+        <div style={{ position: 'fixed', inset: 0, zIndex: 999999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', padding: '20px' }} onClick={() => setActiveModal(null)}>
           <div style={{ background: '#1a1a1a', padding: '40px', borderRadius: '12px', maxWidth: '600px', width: '100%', position: 'relative', border: '1px solid rgba(138, 30, 32, 0.4)' }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setActiveModal(null)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none', color: '#a3a3a3', cursor: 'pointer', transition: '0.2s' }} onMouseOver={e => e.currentTarget.style.color='#fff'} onMouseOut={e => e.currentTarget.style.color='#a3a3a3'}>
               <X size={24} />
@@ -106,7 +107,8 @@ export default function Footer() {
               <p>{modalContent[activeModal].content}</p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
