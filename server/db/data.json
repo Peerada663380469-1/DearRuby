@@ -1,0 +1,470 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "ผู้จัดการ",
+      "pin_hash": "$2a$10$yT7Ghc.zQ7/NBrcetkl2Fuh4jbnxjgdi0nzox.C9ss1UR8H06Yky.",
+      "created_at": "2026-05-20T03:29:33.330Z"
+    }
+  ],
+  "tables": [
+    {
+      "id": 1,
+      "name": "T1",
+      "status": "occupied",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 2,
+      "name": "T2",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 3,
+      "name": "T3",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 4,
+      "name": "T4",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 5,
+      "name": "T5",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 6,
+      "name": "T6",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 7,
+      "name": "T7",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 8,
+      "name": "T8",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 9,
+      "name": "T9",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 10,
+      "name": "T10",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 11,
+      "name": "T11",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 12,
+      "name": "T12",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 13,
+      "name": "T13",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 14,
+      "name": "T14",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 15,
+      "name": "T15",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 16,
+      "name": "T16",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 17,
+      "name": "T17",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 18,
+      "name": "T18",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 19,
+      "name": "T19",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 20,
+      "name": "T20",
+      "status": "available",
+      "seats": 4,
+      "reservation": null
+    },
+    {
+      "id": 21,
+      "name": "T21",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 22,
+      "name": "T22",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 23,
+      "name": "T23",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 24,
+      "name": "T24",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 25,
+      "name": "T25",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 26,
+      "name": "T26",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 27,
+      "name": "T27",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 28,
+      "name": "T28",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 29,
+      "name": "T29",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    },
+    {
+      "id": 30,
+      "name": "T30",
+      "status": "available",
+      "seats": 6,
+      "reservation": null
+    }
+  ],
+  "menuItems": [
+    {
+      "id": 1,
+      "name": "ผัดกะเพราหมูสับ",
+      "name_en": "Basil Stir-Fried Pork",
+      "category": "อาหารคาว",
+      "price": 60,
+      "image_url": "/images/food/1.png"
+    },
+    {
+      "id": 2,
+      "name": "ข้าวมันไก่",
+      "name_en": "Hainanese Chicken Rice",
+      "category": "อาหารคาว",
+      "price": 55,
+      "image_url": "/images/food/2.png"
+    },
+    {
+      "id": 3,
+      "name": "ผัดไทยกุ้งสด",
+      "name_en": "Pad Thai with Shrimp",
+      "category": "อาหารคาว",
+      "price": 75,
+      "image_url": "/images/food/3.png"
+    },
+    {
+      "id": 4,
+      "name": "ต้มยำกุ้ง",
+      "name_en": "Tom Yum Goong",
+      "category": "อาหารคาว",
+      "price": 120,
+      "image_url": "/images/food/4.png"
+    },
+    {
+      "id": 5,
+      "name": "แกงเขียวหวานไก่",
+      "name_en": "Green Curry Chicken",
+      "category": "อาหารคาว",
+      "price": 80,
+      "image_url": "/images/food/5.png"
+    },
+    {
+      "id": 6,
+      "name": "ข้าวผัดปู",
+      "name_en": "Crab Fried Rice",
+      "category": "อาหารคาว",
+      "price": 85,
+      "image_url": "/images/food/6.png"
+    },
+    {
+      "id": 7,
+      "name": "ส้มตำไทย",
+      "name_en": "Thai Papaya Salad",
+      "category": "อาหารคาว",
+      "price": 50,
+      "image_url": "/images/food/7.png"
+    },
+    {
+      "id": 8,
+      "name": "หมูสะเต๊ะ",
+      "name_en": "Pork Satay",
+      "category": "อาหารคาว",
+      "price": 70,
+      "image_url": "/images/food/8.png"
+    },
+    {
+      "id": 9,
+      "name": "ผัดซีอิ๊วเส้นใหญ่",
+      "name_en": "Stir-Fried Noodles",
+      "category": "อาหารคาว",
+      "price": 55,
+      "image_url": "/images/food/9.png"
+    },
+    {
+      "id": 10,
+      "name": "ข้าวหมูแดง",
+      "name_en": "Red Pork Rice",
+      "category": "อาหารคาว",
+      "price": 60,
+      "image_url": "/images/food/10.png"
+    },
+    {
+      "id": 11,
+      "name": "น้ำเปล่า",
+      "name_en": "Water",
+      "category": "เครื่องดื่ม",
+      "price": 10,
+      "image_url": "/images/food/11.png"
+    },
+    {
+      "id": 12,
+      "name": "ชาเย็น",
+      "name_en": "Thai Iced Tea",
+      "category": "เครื่องดื่ม",
+      "price": 35,
+      "image_url": "/images/food/12.png"
+    },
+    {
+      "id": 13,
+      "name": "กาแฟเย็น",
+      "name_en": "Iced Coffee",
+      "category": "เครื่องดื่ม",
+      "price": 40,
+      "image_url": "/images/food/13.png"
+    },
+    {
+      "id": 14,
+      "name": "น้ำส้มคั้น",
+      "name_en": "Fresh Orange Juice",
+      "category": "เครื่องดื่ม",
+      "price": 45,
+      "image_url": "/images/food/14.png"
+    },
+    {
+      "id": 15,
+      "name": "สมูทตี้มะม่วง",
+      "name_en": "Mango Smoothie",
+      "category": "เครื่องดื่ม",
+      "price": 55,
+      "image_url": "/images/food/15.png"
+    },
+    {
+      "id": 16,
+      "name": "โกโก้เย็น",
+      "name_en": "Iced Cocoa",
+      "category": "เครื่องดื่ม",
+      "price": 45,
+      "image_url": "/images/food/16.png"
+    },
+    {
+      "id": 17,
+      "name": "น้ำมะนาว",
+      "name_en": "Lemonade",
+      "category": "เครื่องดื่ม",
+      "price": 30,
+      "image_url": null
+    },
+    {
+      "id": 18,
+      "name": "ชาเขียวมัทฉะ",
+      "name_en": "Matcha Green Tea",
+      "category": "เครื่องดื่ม",
+      "price": 50,
+      "image_url": null
+    },
+    {
+      "id": 19,
+      "name": "ข้าวเหนียวมะม่วง",
+      "name_en": "Mango Sticky Rice",
+      "category": "ของหวาน",
+      "price": 80,
+      "image_url": null
+    },
+    {
+      "id": 20,
+      "name": "ไอศกรีมกะทิ",
+      "name_en": "Coconut Ice Cream",
+      "category": "ของหวาน",
+      "price": 45,
+      "image_url": null
+    },
+    {
+      "id": 21,
+      "name": "บัวลอยไข่หวาน",
+      "name_en": "Bua Loy",
+      "category": "ของหวาน",
+      "price": 40,
+      "image_url": null
+    },
+    {
+      "id": 22,
+      "name": "ทับทิมกรอบ",
+      "name_en": "Tab Tim Grob",
+      "category": "ของหวาน",
+      "price": 35,
+      "image_url": null
+    },
+    {
+      "id": 23,
+      "name": "เค้กช็อกโกแลต",
+      "name_en": "Chocolate Cake",
+      "category": "ของหวาน",
+      "price": 65,
+      "image_url": null
+    },
+    {
+      "id": 24,
+      "name": "โรตีกล้วยไข่",
+      "name_en": "Banana Egg Roti",
+      "category": "ของหวาน",
+      "price": 50,
+      "image_url": null
+    }
+  ],
+  "orders": [
+    {
+      "table_id": 1,
+      "subtotal": 310,
+      "vat": 21.7,
+      "discount": 0,
+      "total": 331.7,
+      "id": 1,
+      "created_at": "2026-05-20T03:30:35.838Z",
+      "status": "active"
+    }
+  ],
+  "orderItems": [
+    {
+      "order_id": 1,
+      "menu_item_id": 1,
+      "menu_item_name": "ผัดกะเพราหมูสับ",
+      "quantity": 1,
+      "price": 60,
+      "id": 1
+    },
+    {
+      "order_id": 1,
+      "menu_item_id": 2,
+      "menu_item_name": "ข้าวมันไก่",
+      "quantity": 1,
+      "price": 55,
+      "id": 2
+    },
+    {
+      "order_id": 1,
+      "menu_item_id": 3,
+      "menu_item_name": "ผัดไทยกุ้งสด",
+      "quantity": 1,
+      "price": 75,
+      "id": 3
+    },
+    {
+      "order_id": 1,
+      "menu_item_id": 4,
+      "menu_item_name": "ต้มยำกุ้ง",
+      "quantity": 1,
+      "price": 120,
+      "id": 4
+    }
+  ],
+  "transactions": [],
+  "nextIds": {
+    "users": 2,
+    "orders": 2,
+    "orderItems": 5,
+    "transactions": 1,
+    "reservations": 1
+  }
+}
