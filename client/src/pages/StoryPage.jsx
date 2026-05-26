@@ -5,12 +5,12 @@ import Navbar from '../components/Navbar';
 
 export default function StoryPage() {
   const galleryImages = [
-    'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80', // Cocktail
-    'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80', // Steak
-    'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80', // Restaurant interior
-    'https://images.unsplash.com/photo-1581349485608-9469926a8e5e?auto=format&fit=crop&w=800&q=80', // Plating
-    'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&w=800&q=80', // Wine
-    'https://images.unsplash.com/photo-1582103287241-2762adba6c36?auto=format&fit=crop&w=800&q=80'  // Night view
+    '/images/gallery_cocktail_night.png',
+    '/images/gallery_steak_night.png',
+    '/images/gallery_interior_night.png',
+    '/images/gallery_plating_night.png',
+    '/images/gallery_wine_night.png',
+    '/images/gallery_ambiance_night.png'
   ];
 
   return (
