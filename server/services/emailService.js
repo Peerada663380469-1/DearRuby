@@ -7,18 +7,25 @@ function getTransporter() {
   if (transporter) return transporter;
 
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-  if (!SMTP_USER || SMTP_USER.includes('your-gmail')) {
+  // Trim any accidental whitespace or line breaks that may have been introduced in Render env vars
+  const host = SMTP_HOST?.trim();
+  const port = SMTP_PORT?.trim();
+  const user = SMTP_USER?.trim();
+  const pass = SMTP_PASS?.trim();
+
+  if (!user || user.includes('your-gmail')) {
     console.warn("⚠️ SMTP credentials not configured. Email will be mocked.");
     return null;
   }
 
+  console.log(`📧 Email transporter configured: host=${host}, port=${port}, user=${user}`);
   transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: parseInt(SMTP_PORT),
-    secure: parseInt(SMTP_PORT) === 465, // true for 465, false for other ports
+    host,
+    port: parseInt(port),
+    secure: parseInt(port) === 465, // true for 465, false for other ports
     auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS
+      user,
+      pass
     }
   });
 

@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import menuRoutes from './routes/menu.js';
 import reservationsRoutes from './routes/reservations.js';
 import eventsRoutes from './routes/events.js';
+import debugEmailRoutes from './routes/debugEmail.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,6 +65,9 @@ app.use('/api/', apiLimiter);
 app.use('/api/reservations', reservationsRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/menu', menuRoutes); // Menu is now fully public
+
+// Debug endpoint for email testing
+app.use('/api/debug', debugEmailRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
