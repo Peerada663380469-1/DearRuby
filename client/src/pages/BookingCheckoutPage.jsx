@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Clock, Users, Calendar, Lock } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
+import { BACKEND_URL } from '../services/api';
+
 export default function BookingCheckoutPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,8 +20,16 @@ export default function BookingCheckoutPage() {
   const [purpose, setPurpose] = useState('');
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [dietary, setDietary] = useState('');
-  const [birthday, setBirthday] = useState('');
-  
+  const [expiry, setExpiry] = useState('');
+  const [cvv, setCvv] = useState('');
+
+  const handleExpiryChange = (e) => {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length >= 2) {
+      val = val.slice(0, 2) + '/' + val.slice(2, 4);
+    }
+    setExpiry(val.slice(0, 5));
+  };
   const preOrderTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   // Default to today if date is missing
   const reservationDate = date || new Date().toISOString().split('T')[0];
@@ -29,9 +39,13 @@ export default function BookingCheckoutPage() {
       alert("Please fill in all required fields and agree to the policies.");
       return;
     }
+    if (phone.length !== 10) {
+      alert("Phone number must be exactly 10 digits.");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await fetch('https://trodden-scoreless-schnapps.ngrok-free.dev/api/reservations', {
+      const res = await fetch(`${BACKEND_URL}/api/reservations`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -42,7 +56,6 @@ export default function BookingCheckoutPage() {
           specialRequests: purpose,
           serviceType: 'Dine-in',
           dietary,
-          birthday,
           preOrderJson: cart.length > 0 ? cart : null
         })
       });
@@ -105,7 +118,7 @@ export default function BookingCheckoutPage() {
             </div>
             <div>
               <label style={labelStyle}>Phone number *</label>
-              <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} style={inputStyle} placeholder="081 234 5678" />
+              <input type="tel" value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} maxLength={10} style={inputStyle} placeholder="0812345678" />
             </div>
           </div>
 
@@ -121,10 +134,6 @@ export default function BookingCheckoutPage() {
                 <option value="business" style={{ color: '#000' }}>Business</option>
                 <option value="casual" style={{ color: '#000' }}>Casual Dining</option>
               </select>
-            </div>
-            <div style={{ marginBottom: 24 }}>
-              <label style={labelStyle}>Birthday (Optional)</label>
-              <input type="text" value={birthday} onChange={e => setBirthday(e.target.value)} placeholder="DD/MM" style={inputStyle} />
             </div>
             <div style={{ marginBottom: 24 }}>
               <label style={labelStyle}>Dietary Preferences and Allergies</label>
@@ -169,11 +178,11 @@ export default function BookingCheckoutPage() {
               </div>
               <div>
                 <label style={labelStyle}>Expiration *</label>
-                <input type="text" placeholder="MM/YY" style={inputStyle} />
+                <input type="text" value={expiry} onChange={handleExpiryChange} placeholder="MM/YY" maxLength={5} style={inputStyle} />
               </div>
               <div>
                 <label style={labelStyle}>Security Code *</label>
-                <input type="text" placeholder="XXX" style={inputStyle} />
+                <input type="password" value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} maxLength={4} placeholder="XXX" style={inputStyle} />
               </div>
             </div>
           </div>
