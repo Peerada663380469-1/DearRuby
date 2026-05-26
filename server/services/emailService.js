@@ -1,50 +1,13 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import 'dotenv/config';
 
-let transporter = null;
-
-function getTransporter() {
-  if (transporter) return transporter;
-
-
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
-    console.warn("⚠️ SMTP environment variables missing. Email will be mocked.");
-    return null;
-  }
-
-  // Trim any accidental whitespace
-  const host = SMTP_HOST.trim();
-  const port = (SMTP_PORT || "").trim();
-  const user = SMTP_USER.trim();
-  const pass = (SMTP_PASS || "").trim();
-
-  console.log(`📧 Email transporter config -> host=${host}, port=${port}, user=${user}`);
-
-  // Render DNS sometimes forces IPv6 which drops packets. 
-  // We hardcode the IPv4 address of smtp.gmail.com (142.250.4.109) to bypass DNS completely.
-  const transportOptions = {
-    host: host.toLowerCase().includes('gmail') ? '142.250.4.109' : host,
-    port: parseInt(port || '465', 10),
-    secure: true, 
-    auth: { user, pass },
-    tls: {
-      servername: host, // Crucial: tell TLS we are connecting to smtp.gmail.com to verify certs
-      rejectUnauthorized: false
-    }
-  };
-
-  transporter = nodemailer.createTransport(transportOptions);
-  return transporter;
-}
+const resend = new Resend(process.env.RESEND_API_KEY || 're_mock_key');
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'THB' }).format(amount);
 };
 
 export async function sendBookingConfirmation(reservation) {
-  const mailer = getTransporter();
   const to = reservation.email;
   const subject = `Reservation Confirmed - Dear Ruby`;
   
@@ -146,33 +109,31 @@ export async function sendBookingConfirmation(reservation) {
     </div>
   `;
 
-  if (!mailer) {
+  if (!process.env.RESEND_API_KEY) {
     console.log("-----------------------------------------");
     console.log(`[MOCK EMAIL TO: ${to}]`);
     console.log(`Subject: ${subject}`);
-    console.log(`(Email omitted from console due to length. Configure SMTP to send real emails.)`);
+    console.log(`(Configure RESEND_API_KEY in .env to send real emails.)`);
     console.log("-----------------------------------------");
     return;
   }
 
   try {
-    await mailer.sendMail({
-      from: process.env.SMTP_FROM || 'reservations@dearruby.co',
-      to,
+    const data = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+      to: [to],
       subject,
       html
     });
-    console.log(`Email sent successfully to ${to}`);
+    console.log(`Email sent successfully via Resend to ${to}`, data);
   } catch (error) {
-    console.error(`Failed to send email to ${to}:`, error);
+    console.error(`Failed to send email to ${to} via Resend:`, error);
     throw error;
   }
 }
 
 export async function sendEventInquiryNotification(inquiry) {
-  const mailer = getTransporter();
-  // Usually this sends to the restaurant admin, but we'll send a copy to the customer too
-  const to = process.env.SMTP_USER; // Send to admin
+  const to = process.env.SMTP_USER || 'admin@dearruby.co'; // Fallback to an admin email
   const customerEmail = inquiry.email;
   const subject = `New Private Event Inquiry - ${inquiry.firstName} ${inquiry.lastName}`;
   
@@ -194,21 +155,21 @@ export async function sendEventInquiryNotification(inquiry) {
     </div>
   `;
 
-  if (!mailer) {
+  if (!process.env.RESEND_API_KEY) {
     console.log(`[MOCK INQUIRY EMAIL] New event inquiry from ${customerEmail}`);
     return;
   }
 
   try {
-    await mailer.sendMail({
-      from: process.env.SMTP_FROM || 'reservations@dearruby.co',
-      to,
-      replyTo: customerEmail,
+    const data = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+      to: [to],
+      reply_to: customerEmail,
       subject,
       html
     });
-    console.log(`Inquiry notification sent to admin`);
+    console.log(`Inquiry notification sent to admin via Resend`, data);
   } catch (error) {
-    console.error(`Failed to send inquiry notification:`, error);
+    console.error(`Failed to send inquiry notification via Resend:`, error);
   }
 }
