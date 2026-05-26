@@ -7,28 +7,27 @@ function getTransporter() {
   if (transporter) return transporter;
 
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-  // Trim any accidental whitespace or line breaks that may have been introduced in Render env vars
-  const host = SMTP_HOST?.trim();
-  const port = SMTP_PORT?.trim();
-  const user = SMTP_USER?.trim();
-  const pass = SMTP_PASS?.trim();
 
-  if (!user || user.includes('your-gmail')) {
-    console.warn("⚠️ SMTP credentials not configured. Email will be mocked.");
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+    console.warn("⚠️ SMTP environment variables missing. Email will be mocked.");
     return null;
   }
 
-  console.log(`📧 Email transporter configured: host=${host}, port=${port}, user=${user}`);
-  transporter = nodemailer.createTransport({
-    host,
-    port: parseInt(port),
-    secure: parseInt(port) === 465, // true for 465, false for other ports
-    auth: {
-      user,
-      pass
-    }
-  });
+  // Trim any whitespace
+  const host = SMTP_HOST.trim();
+  const port = SMTP_PORT?.trim();
+  const user = SMTP_USER.trim();
+  const pass = SMTP_PASS.trim();
 
+  console.log(`📧 Email transporter config -> host=${host}, port=${port}, user=${user}`);
+
+  // Use Gmail service shortcut if the host is Gmail – it handles TLS automatically and prefers port 465
+  const isGmail = host.toLowerCase().includes('gmail');
+  const transportOptions = isGmail
+    ? { service: 'gmail', auth: { user, pass } }
+    : { host, port: parseInt(port || '587'), secure: parseInt(port) === 465, auth: { user, pass } };
+
+  transporter = nodemailer.createTransport(transportOptions);
   return transporter;
 }
 
