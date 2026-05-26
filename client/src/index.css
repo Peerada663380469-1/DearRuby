@@ -137,7 +137,7 @@ input, select, textarea { font-family: var(--font); outline: none; }
 
 /* ===== EVENTS PAGE ===== */
 .events-hero { padding: 80px 48px; text-align: center; }
-.events-content { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.events-content { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
 .events-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .events-form-card { padding: 40px; }
 
@@ -621,7 +621,7 @@ input, select, textarea { font-family: var(--font); outline: none; }
 
   /* Events Page Overrides */
   .events-hero { padding: 48px 24px; }
-  .events-content { padding: 32px 16px; display: flex; flex-direction: column; gap: 32px; }
+  .events-content { padding: 32px 16px; display: flex; flex-direction: column; gap: 32px; align-items: stretch; }
   .events-form-row { grid-template-columns: 1fr; gap: 16px; }
   .events-form-card { padding: 20px; }
 }

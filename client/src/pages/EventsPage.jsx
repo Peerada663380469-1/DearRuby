@@ -71,7 +71,7 @@ export default function EventsPage() {
       </div>
 
       {/* Content */}
-      <div className="events-content mobile-col" style={{ maxWidth: 1200, margin: '0 auto', alignItems: 'start' }}>
+      <div className="events-content mobile-col" style={{ maxWidth: 1200, margin: '0 auto' }}>
         
         {/* Info */}
         <div>
