@@ -157,7 +157,7 @@ export default function POSPage() {
         {filteredMenu.map(item => (
           <div key={item.id} style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ position: 'relative', width: '100%', paddingTop: '100%', overflow: 'hidden', borderRadius: 'var(--radius-md)', marginBottom: 24, background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(246, 244, 238, 0.1)' }}>
-              <img src={item.image} alt={item.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: item.category === 'Premium Wines' ? 'contain' : 'cover', objectPosition: item.name === 'Madagascar Vanilla Crème Brûlée' ? '80% 50%' : 'center', transition: 'transform 0.5s ease', padding: item.category === 'Premium Wines' ? '20px' : '0' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
+              <img src={item.image} alt={item.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: item.category === 'Premium Wines' ? 'contain' : 'cover', objectPosition: item.name === 'Madagascar Vanilla Crème Brûlée' ? '80% 50%' : (item.name === 'Tokyo Sour' ? '80% 50%' : 'center'), transition: 'transform 0.5s ease', padding: item.category === 'Premium Wines' ? '20px' : '0' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
             </div>
             
             {/* Title with single clean header */}
