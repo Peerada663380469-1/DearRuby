@@ -74,8 +74,8 @@ export async function sendBookingConfirmation(reservation) {
       <!-- Header -->
       <div style="background: url('https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?auto=format&fit=crop&w=800&q=80') center/cover; padding: 40px 20px; text-align: center; border-bottom: 3px solid #8A1E20;">
         <div style="background: rgba(0,0,0,0.6); padding: 20px; display: inline-block; text-align: center;">
-          <a href="https://this-is-not-dear-ruby.netlify.app" style="text-decoration: none; border: none;">
-            <img src="https://this-is-not-dear-ruby.netlify.app/images/logo-transparent.png" alt="Dear Ruby" style="height: 140px; max-width: 100%; object-fit: contain; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; border: none;" />
+          <a href="https://dearruby.onrender.com" style="text-decoration: none; border: none;">
+            <img src="https://dearruby.onrender.com/images/logo-transparent.png" alt="Dear Ruby" style="height: 140px; max-width: 100%; object-fit: contain; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; border: none;" />
           </a>
           <p style="margin: 10px 0 0; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Booking Confirmation</p>
         </div>
