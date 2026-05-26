@@ -1,35 +1,33 @@
+from rembg import remove
+from PIL import Image
 import sys
 import os
-try:
-    from rembg import remove
-    from PIL import Image
-except ImportError:
-    print("Please install rembg and Pillow")
-    sys.exit(1)
 
-files = [
-    "Alta Vigna - Cannonau di Sardegna.png",
-    "Luce Di Terra - Isola dei Nuraghi.png",
-    "Vento Rosso - Sardinian Rosé wine.png"
-]
-
-for f in files:
-    path = f"client/public/images/{f}"
-    if not os.path.exists(path):
-        print(f"File not found: {path}")
-        continue
+def remove_background(input_path, output_path):
+    if not os.path.exists(input_path):
+        print(f"Error: Could not find file '{input_path}'")
+        return
         
-    print(f"Processing {f}...")
+    print(f"Removing background from '{input_path}'...")
     try:
-        input_img = Image.open(path)
+        # Load the input image
+        input_image = Image.open(input_path)
         
-        # Remove background (makes it transparent)
-        output_img = remove(input_img)
+        # Remove the background using AI model (U-2-Net)
+        output_image = remove(input_image)
         
-        # Save back to the same path
-        output_img.save(path)
-        print(f"Successfully processed {f}")
+        # Save the result as a PNG (to preserve transparency)
+        output_image.save(output_path, "PNG")
+        print(f"Success! Saved transparent image to '{output_path}'")
     except Exception as e:
-        print(f"Error processing {f}: {e}")
+        print(f"Error: {e}")
 
-print("All done!")
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python remove_bg.py <input_image_path> <output_image_path>")
+        print("Example: python remove_bg.py image.jpg image_transparent.png")
+        sys.exit(1)
+        
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+    remove_background(input_file, output_file)

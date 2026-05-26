@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/test', async (req, res) => {
   console.log('🔧 Debug endpoint hit');
+  const dummy = {
     firstName: 'Debug',
     lastName: 'User',
     email: process.env.SMTP_USER || 'peeradamod43848@gmail.com',
