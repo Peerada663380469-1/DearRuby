@@ -4,7 +4,7 @@ import { sendBookingConfirmation } from '../services/emailService.js';
 const router = express.Router();
 
 router.get('/test', async (req, res) => {
-  const dummy = {
+  console.log('🔧 Debug endpoint hit');
     firstName: 'Debug',
     lastName: 'User',
     email: process.env.SMTP_USER || 'peeradamod43848@gmail.com',

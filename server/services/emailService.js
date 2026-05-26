@@ -6,6 +6,7 @@ let transporter = null;
 function getTransporter() {
   if (transporter) return transporter;
 
+
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
@@ -13,19 +14,29 @@ function getTransporter() {
     return null;
   }
 
-  // Trim any whitespace
+  // Trim any accidental whitespace
   const host = SMTP_HOST.trim();
-  const port = SMTP_PORT?.trim();
+  const port = (SMTP_PORT || "").trim();
   const user = SMTP_USER.trim();
-  const pass = SMTP_PASS.trim();
+  const pass = (SMTP_PASS || "").trim();
 
   console.log(`📧 Email transporter config -> host=${host}, port=${port}, user=${user}`);
 
-  // Use Gmail service shortcut if the host is Gmail – it handles TLS automatically and prefers port 465
-  const isGmail = host.toLowerCase().includes('gmail');
-  const transportOptions = isGmail
-    ? { service: 'gmail', auth: { user, pass } }
-    : { host, port: parseInt(port || '587'), secure: parseInt(port) === 465, auth: { user, pass } };
+  // Use Gmail shortcut if host contains gmail (auto TLS handling)
+  // Force explicit SMTP configuration (avoid Gmail shortcut which may try IPv6/port 465)
+  const transportOptions = {
+    host,
+    port: parseInt(port || '587', 10),
+    secure: false, // use STARTTLS on port 587
+    auth: { user, pass },
+    // Force IPv4 (Render sometimes cannot reach IPv6 smtp.gmail.com)
+    family: 4,
+    // Nodemailer will upgrade to TLS via STARTTLS automatically
+    tls: {
+      // Allow self‑signed certs just in case (Render's egress)
+      rejectUnauthorized: false
+    }
+  };
 
   transporter = nodemailer.createTransport(transportOptions);
   return transporter;
