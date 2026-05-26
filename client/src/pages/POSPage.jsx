@@ -66,12 +66,21 @@ export default function POSPage() {
       });
   }, []);
 
-  const filteredMenu = menuItems.filter(item => {
-    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
+  const categoryOrder = ['Starters', 'Mains', 'Artisan Pizza', 'Desserts', 'Drinks', 'Premium Wines'];
+  const filteredMenu = menuItems
+    .filter(item => {
+      const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+      const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
+      return matchesCategory && matchesSearch;
+    })
+    .sort((a, b) => {
+      let indexA = categoryOrder.indexOf(a.category);
+      let indexB = categoryOrder.indexOf(b.category);
+      if (indexA === -1) indexA = 999;
+      if (indexB === -1) indexB = 999;
+      return indexA - indexB;
+    });
 
   const addToCart = (item) => {
     const existing = cart.find(c => c.id === item.id);
