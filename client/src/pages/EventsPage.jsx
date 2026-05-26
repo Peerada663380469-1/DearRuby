@@ -63,7 +63,7 @@ export default function EventsPage() {
       <div className="events-hero" style={{ background: 'url("https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1920&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.7)' }}></div>
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 800, margin: '0 auto', color: '#F6F4EE' }}>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '3.5rem', fontWeight: 400, marginBottom: 24 }}>Private Events</h1>
+          <h1 className="hero-title" style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, marginBottom: 24 }}>Private Events</h1>
           <p style={{ fontSize: '1.2rem', opacity: 0.9, lineHeight: 1.6, color: '#C8C4B7' }}>
             Host your next corporate gathering, exclusive celebration, or wedding reception with a breathtaking panoramic view of Bangkok.
           </p>
@@ -104,7 +104,7 @@ export default function EventsPage() {
         </div>
 
         {/* Inquiry Form Card */}
-        <div style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(10px)', border: '1px solid rgba(246, 244, 238, 0.15)', padding: '40px', borderRadius: 'var(--radius-md)', boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}>
+        <div className="events-form-card" style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(10px)', border: '1px solid rgba(246, 244, 238, 0.15)', borderRadius: 'var(--radius-md)', boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}>
           {submitted ? (
             <div style={{ textAlign: 'center', padding: '40px 0' }}>
               <CheckCircle size={64} style={{ color: '#10b981', margin: '0 auto 24px' }} />

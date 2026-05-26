@@ -139,6 +139,7 @@ input, select, textarea { font-family: var(--font); outline: none; }
 .events-hero { padding: 80px 48px; text-align: center; }
 .events-content { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
 .events-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.events-form-card { padding: 40px; }
 
 /* ===== BUTTONS ===== */
 .btn {
@@ -622,4 +623,5 @@ input, select, textarea { font-family: var(--font); outline: none; }
   .events-hero { padding: 48px 24px; }
   .events-content { padding: 32px 16px; display: flex; flex-direction: column; gap: 32px; }
   .events-form-row { grid-template-columns: 1fr; gap: 16px; }
+  .events-form-card { padding: 20px; }
 }
