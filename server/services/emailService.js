@@ -22,17 +22,15 @@ function getTransporter() {
 
   console.log(`📧 Email transporter config -> host=${host}, port=${port}, user=${user}`);
 
-  // Force explicit SMTP configuration with port 465 to avoid timeouts on Render
+  // Render DNS sometimes forces IPv6 which drops packets. 
+  // We hardcode the IPv4 address of smtp.gmail.com (142.250.4.109) to bypass DNS completely.
   const transportOptions = {
-    host,
-    port: parseInt(port || '465', 10), // Use 465 if port is missing
-    secure: true, // Use TLS (true for 465, false for 587)
+    host: host.toLowerCase().includes('gmail') ? '142.250.4.109' : host,
+    port: parseInt(port || '465', 10),
+    secure: true, 
     auth: { user, pass },
-    // Force IPv4 (Render sometimes cannot reach IPv6 smtp.gmail.com)
-    family: 4,
-    // Nodemailer will upgrade to TLS via STARTTLS automatically on 587, but for 465 it connects securely immediately
     tls: {
-      // Allow self‑signed certs just in case (Render's egress)
+      servername: host, // Crucial: tell TLS we are connecting to smtp.gmail.com to verify certs
       rejectUnauthorized: false
     }
   };
