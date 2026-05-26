@@ -1,7 +1,8 @@
 import { Resend } from 'resend';
 import 'dotenv/config';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_mock_key');
+// Hardcoded API key provided by user to bypass Render environment variable setup
+const resend = new Resend('re_LyRatH9C_DFtUYBE3wk93RjCDvW9D7uM9');
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'THB' }).format(amount);
@@ -109,14 +110,7 @@ export async function sendBookingConfirmation(reservation) {
     </div>
   `;
 
-  if (!process.env.RESEND_API_KEY) {
-    console.log("-----------------------------------------");
-    console.log(`[MOCK EMAIL TO: ${to}]`);
-    console.log(`Subject: ${subject}`);
-    console.log(`(Configure RESEND_API_KEY in .env to send real emails.)`);
-    console.log("-----------------------------------------");
-    return;
-  }
+  // Hardcoded API key used, no need to mock
 
   try {
     const data = await resend.emails.send({
@@ -155,10 +149,7 @@ export async function sendEventInquiryNotification(inquiry) {
     </div>
   `;
 
-  if (!process.env.RESEND_API_KEY) {
-    console.log(`[MOCK INQUIRY EMAIL] New event inquiry from ${customerEmail}`);
-    return;
-  }
+  // Hardcoded API key used, no need to mock
 
   try {
     const data = await resend.emails.send({
