@@ -75,6 +75,13 @@ export default function POSPage() {
       return matchesCategory && matchesSearch;
     })
     .sort((a, b) => {
+      // Special case: Evian always goes absolutely last
+      const isEvianA = a.name.includes('Evian');
+      const isEvianB = b.name.includes('Evian');
+      
+      if (isEvianA && !isEvianB) return 1;
+      if (!isEvianA && isEvianB) return -1;
+
       let indexA = categoryOrder.indexOf(a.category);
       let indexB = categoryOrder.indexOf(b.category);
       if (indexA === -1) indexA = 999;
