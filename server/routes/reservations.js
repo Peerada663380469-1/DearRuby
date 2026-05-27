@@ -8,7 +8,10 @@ const prisma = new PrismaClient();
 
 // POST /api/reservations - Create a new reservation (PUBLIC)
 router.post('/', async (req, res) => {
-  console.log("--> Received POST /api/reservations", req.body);
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const userAgent = req.headers['user-agent'] || 'Unknown';
+  console.log(`--> Received POST /api/reservations from IP: ${clientIp} | Agent: ${userAgent}`);
+  console.log("--> Data:", req.body);
   try {
     const { 
       firstName, lastName, email, phone, date, time, guests, specialRequests,

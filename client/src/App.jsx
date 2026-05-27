@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from './context/ToastContext';
 import { LanguageProvider } from './context/LanguageContext';
-import POSPage from './pages/POSPage';
+import MenuPage from './pages/MenuPage';
 import ReservationPage from './pages/ReservationPage';
 import BookingCheckoutPage from './pages/BookingCheckoutPage';
 import StoryPage from './pages/StoryPage';
@@ -17,13 +17,13 @@ export default function App() {
             {/* Customer Routes (Public) */}
             <Route path="/" element={<ReservationPage />} />
             <Route path="/checkout" element={<BookingCheckoutPage />} />
-            <Route path="/menu" element={<POSPage />} />
-            <Route path="/pos" element={<POSPage />} />
+            <Route path="/menu" element={<MenuPage />} />
             <Route path="/story" element={<StoryPage />} />
             <Route path="/events" element={<EventsPage />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/login" element={<Navigate to="/admin" />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" />} />

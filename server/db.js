@@ -27,19 +27,6 @@ export async function seedDatabase() {
     console.log("Manager seeded successfully.");
   }
 
-  // 2. Seed Tables
-  const tableCount = await prisma.table.count();
-  if (tableCount === 0) {
-    const tables = [];
-    for (let i = 1; i <= 30; i++) {
-      tables.push({
-        name: `T${i}`,
-        seats: i <= 20 ? 4 : 6,
-      });
-    }
-    await prisma.table.createMany({ data: tables });
-    console.log("Tables seeded successfully.");
-  }
 
   // 3. Seed Luxury Menu Items
   const menuCount = await prisma.menuItem.count();

@@ -68,7 +68,7 @@ input, select, textarea { font-family: var(--font); outline: none; }
 ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 10px; }
 
 /* ===== LAYOUT ===== */
-.app-layout { display: flex; flex-direction: column; height: 100vh; }
+.app-layout { display: flex; flex-direction: column; min-height: 100vh; }
 
 .top-nav { 
   height: 72px; 

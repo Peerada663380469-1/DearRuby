@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import api from '../services/api';
 
-export default function POSPage() {
+export default function MenuPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [categories, setCategories] = useState(['All']);

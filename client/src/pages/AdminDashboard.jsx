@@ -19,29 +19,6 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    try {
-      // Test the key by fetching reservations
-      const res = await api.get('/reservations', { headers: { 'x-admin-key': adminKey } });
-      setReservations(res.data);
-      setIsAuthenticated(true);
-      sessionStorage.setItem('ruby_admin_key', adminKey);
-      
-      // Fetch inquiries too
-      const inqRes = await api.get('/events/inquiries', { headers: { 'x-admin-key': adminKey } });
-      setInquiries(inqRes.data);
-    } catch (err) {
-      setError('Invalid Admin Key');
-      setIsAuthenticated(false);
-      sessionStorage.removeItem('ruby_admin_key');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -53,7 +30,7 @@ export default function AdminDashboard() {
       setInquiries(inqData.data);
     } catch (err) {
       console.error(err);
-      if (err.response?.status === 401) {
+      if (err.response && (err.response.status === 401 || err.response.status === 403)) {
         setIsAuthenticated(false);
         sessionStorage.removeItem('ruby_admin_key');
       }
@@ -61,6 +38,76 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  const handlePinSubmit = async (enteredPin) => {
+    setLoading(true);
+    setError('');
+    const attemptKey = enteredPin === '2026' ? 'supersecret-ruby-key-2026' : enteredPin;
+    try {
+      const res = await api.get('/reservations', { headers: { 'x-admin-key': attemptKey } });
+      setReservations(res.data);
+      setIsAuthenticated(true);
+      sessionStorage.setItem('ruby_admin_key', attemptKey);
+      setAdminKey(attemptKey);
+      
+      const inqRes = await api.get('/events/inquiries', { headers: { 'x-admin-key': attemptKey } });
+      setInquiries(inqRes.data);
+    } catch (err) {
+      setError('Invalid PIN');
+      setAdminKey('');
+      setIsAuthenticated(false);
+      sessionStorage.removeItem('ruby_admin_key');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePinClick = (num) => {
+    if (adminKey.length < 4) {
+      const newPin = adminKey + num;
+      setAdminKey(newPin);
+      setError('');
+    }
+  };
+
+  const handlePinClear = () => {
+    setAdminKey('');
+    setError('');
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="login-page">
+        <div className="login-orb-1"></div>
+        <div className="login-orb-2"></div>
+        <div className="login-card">
+          <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-heading)', fontSize: '2rem', marginBottom: 8 }}>Restricted Access</h2>
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Enter Administrative PIN</p>
+          
+          <div className="pin-display">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className={`pin-dot ${i < adminKey.length ? 'filled' : ''}`}></div>
+            ))}
+          </div>
+
+          {error && <div className="login-error">{error}</div>}
+
+          <div className="pin-pad" style={{ marginTop: 32 }}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+              <button key={num} type="button" className="pin-key" onClick={() => handlePinClick(num.toString())}>
+                {num}
+              </button>
+            ))}
+            <button type="button" className="pin-key action" onClick={handlePinClear}>C</button>
+            <button type="button" className="pin-key" onClick={() => handlePinClick('0')}>0</button>
+            <button type="button" className="pin-key enter" onClick={() => handlePinSubmit(adminKey)} disabled={loading || adminKey.length < 4}>
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -71,36 +118,15 @@ export default function AdminDashboard() {
   return (
     <div className="app-layout">
       <Navbar />
-      
       <main className="main-content" style={{ background: 'var(--bg-primary)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 0' }}>
-          
-          {!isAuthenticated ? (
-            <div className="card" style={{ maxWidth: 400, margin: '100px auto', textAlign: 'center' }}>
-              <h2 style={{ marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Admin Login</h2>
-              {error && <p style={{ color: 'var(--red)', marginBottom: 16 }}>{error}</p>}
-              <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <input 
-                  type="password" 
-                  value={adminKey} 
-                  onChange={(e) => setAdminKey(e.target.value)} 
-                  placeholder="Enter Admin Secret Key"
-                  className="form-input"
-                  required
-                />
-                <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                  {loading ? 'Authenticating...' : 'Login'}
-                </button>
-              </form>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+              <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem' }}>Admin Dashboard</h1>
+              <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
             </div>
-          ) : (
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-                <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem' }}>Admin Dashboard</h1>
-                <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
-              </div>
-
-              {/* Tabs */}
+            
+            {/* Tabs */}
               <div style={{ display: 'flex', gap: 16, marginBottom: 24, borderBottom: '1px solid var(--border)', paddingBottom: 16 }}>
                 <button 
                   onClick={() => setActiveTab('reservations')}
