@@ -12,6 +12,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('reservations');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (adminKey && isAuthenticated) {
@@ -115,6 +116,28 @@ export default function AdminDashboard() {
     sessionStorage.removeItem('ruby_admin_key');
   };
 
+  const filteredReservations = reservations.filter(r => {
+    const term = searchTerm.toLowerCase();
+    return (
+      (r.firstName || '').toLowerCase().includes(term) ||
+      (r.lastName || '').toLowerCase().includes(term) ||
+      (r.phone || '').toLowerCase().includes(term) ||
+      (r.email || '').toLowerCase().includes(term) ||
+      (r.date || '').toLowerCase().includes(term)
+    );
+  });
+
+  const filteredInquiries = inquiries.filter(i => {
+    const term = searchTerm.toLowerCase();
+    return (
+      (i.firstName || '').toLowerCase().includes(term) ||
+      (i.lastName || '').toLowerCase().includes(term) ||
+      (i.phone || '').toLowerCase().includes(term) ||
+      (i.email || '').toLowerCase().includes(term) ||
+      (i.eventDate || '').toLowerCase().includes(term)
+    );
+  });
+
   return (
     <div className="app-layout">
       <Navbar />
@@ -126,30 +149,50 @@ export default function AdminDashboard() {
               <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
             </div>
             
-            {/* Tabs */}
-              <div style={{ display: 'flex', gap: 16, marginBottom: 24, borderBottom: '1px solid var(--border)', paddingBottom: 16 }}>
-                <button 
-                  onClick={() => setActiveTab('reservations')}
-                  style={{ 
-                    padding: '8px 16px', background: 'none', border: 'none', 
-                    fontSize: '1.1rem', fontWeight: activeTab === 'reservations' ? 700 : 400,
-                    color: activeTab === 'reservations' ? 'var(--brand-red)' : 'var(--text-secondary)',
-                    cursor: 'pointer', borderBottom: activeTab === 'reservations' ? '2px solid var(--brand-red)' : '2px solid transparent'
-                  }}
-                >
-                  Table Reservations ({reservations.length})
-                </button>
-                <button 
-                  onClick={() => setActiveTab('inquiries')}
-                  style={{ 
-                    padding: '8px 16px', background: 'none', border: 'none', 
-                    fontSize: '1.1rem', fontWeight: activeTab === 'inquiries' ? 700 : 400,
-                    color: activeTab === 'inquiries' ? 'var(--brand-red)' : 'var(--text-secondary)',
-                    cursor: 'pointer', borderBottom: activeTab === 'inquiries' ? '2px solid var(--brand-red)' : '2px solid transparent'
-                  }}
-                >
-                  Private Event Inquiries ({inquiries.length})
-                </button>
+            {/* Tabs & Search */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid var(--border)', paddingBottom: 16, flexWrap: 'wrap', gap: 16 }}>
+                <div style={{ display: 'flex', gap: 16 }}>
+                  <button 
+                    onClick={() => setActiveTab('reservations')}
+                    style={{ 
+                      padding: '8px 16px', background: 'none', border: 'none', 
+                      fontSize: '1.1rem', fontWeight: activeTab === 'reservations' ? 700 : 400,
+                      color: activeTab === 'reservations' ? 'var(--brand-red)' : 'var(--text-secondary)',
+                      cursor: 'pointer', borderBottom: activeTab === 'reservations' ? '2px solid var(--brand-red)' : '2px solid transparent'
+                    }}
+                  >
+                    Table Reservations ({filteredReservations.length})
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('inquiries')}
+                    style={{ 
+                      padding: '8px 16px', background: 'none', border: 'none', 
+                      fontSize: '1.1rem', fontWeight: activeTab === 'inquiries' ? 700 : 400,
+                      color: activeTab === 'inquiries' ? 'var(--brand-red)' : 'var(--text-secondary)',
+                      cursor: 'pointer', borderBottom: activeTab === 'inquiries' ? '2px solid var(--brand-red)' : '2px solid transparent'
+                    }}
+                  >
+                    Private Event Inquiries ({filteredInquiries.length})
+                  </button>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <input 
+                    type="text" 
+                    placeholder="Search name, phone, email, date..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                      padding: '10px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid var(--border)',
+                      background: 'var(--bg-secondary)',
+                      color: 'var(--text-primary)',
+                      fontFamily: 'var(--font-body)',
+                      minWidth: '280px',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Content */}
@@ -172,10 +215,10 @@ export default function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {reservations.length === 0 ? (
+                          {filteredReservations.length === 0 ? (
                             <tr><td colSpan="7" style={{ textAlign: 'center' }}>No reservations found.</td></tr>
                           ) : (
-                            reservations.map(r => (
+                            filteredReservations.map(r => (
                               <tr key={r.id}>
                                 <td style={{ fontWeight: 600 }}>{r.date} <br/><span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{r.time}</span></td>
                                 <td>{r.firstName} {r.lastName}</td>
@@ -224,10 +267,10 @@ export default function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {inquiries.length === 0 ? (
+                          {filteredInquiries.length === 0 ? (
                             <tr><td colSpan="6" style={{ textAlign: 'center' }}>No event inquiries found.</td></tr>
                           ) : (
-                            inquiries.map(i => (
+                            filteredInquiries.map(i => (
                               <tr key={i.id}>
                                 <td style={{ fontWeight: 600 }}>{i.eventDate}</td>
                                 <td>{i.firstName} {i.lastName}</td>
@@ -246,7 +289,6 @@ export default function AdminDashboard() {
               </div>
 
             </div>
-          )}
           
         </div>
       </main>
