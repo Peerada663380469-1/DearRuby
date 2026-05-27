@@ -168,11 +168,12 @@ export default function AdminDashboard() {
                             <th>Guests</th>
                             <th>Service</th>
                             <th>Status</th>
+                            <th>Details</th>
                           </tr>
                         </thead>
                         <tbody>
                           {reservations.length === 0 ? (
-                            <tr><td colSpan="6" style={{ textAlign: 'center' }}>No reservations found.</td></tr>
+                            <tr><td colSpan="7" style={{ textAlign: 'center' }}>No reservations found.</td></tr>
                           ) : (
                             reservations.map(r => (
                               <tr key={r.id}>
@@ -185,6 +186,23 @@ export default function AdminDashboard() {
                                   <span className={`badge ${r.status === 'confirmed' ? 'badge-green' : 'badge-amber'}`}>
                                     {r.status.toUpperCase()}
                                   </span>
+                                </td>
+                                <td style={{ maxWidth: 300 }}>
+                                  {r.specialRequests && <div style={{fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 4}}><strong>Occasion:</strong> {r.specialRequests}</div>}
+                                  {r.dietary && <div style={{fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 4}}><strong>Dietary:</strong> {r.dietary}</div>}
+                                  {r.preOrderJson && (() => {
+                                    try {
+                                      const preOrders = JSON.parse(r.preOrderJson);
+                                      if (preOrders && preOrders.length > 0) {
+                                        return (
+                                          <div style={{fontSize: '0.85rem', color: 'var(--brand-red)'}}>
+                                            <strong>Pre-order:</strong> {preOrders.map(item => `${item.qty}x ${item.name}`).join(', ')}
+                                          </div>
+                                        )
+                                      }
+                                    } catch(e) {}
+                                    return null;
+                                  })()}
                                 </td>
                               </tr>
                             ))
