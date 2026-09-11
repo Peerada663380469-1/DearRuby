@@ -9,6 +9,8 @@ import menuRoutes from './routes/menu.js';
 import reservationsRoutes from './routes/reservations.js';
 import eventsRoutes from './routes/events.js';
 import debugEmailRoutes from './routes/debugEmail.js';
+import customerAuthRoutes from './routes/customerAuth.js';
+import customerRoutes from './routes/customerRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,6 +67,12 @@ app.use('/api/', apiLimiter);
 app.use('/api/reservations', reservationsRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/menu', menuRoutes); // Menu is now fully public
+
+// Customer auth (public - register/login)
+app.use('/api/customer', customerAuthRoutes);
+
+// Customer protected routes (requires customer JWT)
+app.use('/api/customer', customerRoutes);
 
 // Debug endpoint for email testing
 app.use('/api/debug', debugEmailRoutes);

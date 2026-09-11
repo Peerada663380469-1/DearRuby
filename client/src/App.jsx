@@ -7,6 +7,11 @@ import BookingCheckoutPage from './pages/BookingCheckoutPage';
 import StoryPage from './pages/StoryPage';
 import EventsPage from './pages/EventsPage';
 import AdminDashboard from './pages/AdminDashboard';
+import CustomerLogin from './pages/CustomerLogin';
+import CustomerDashboard from './pages/CustomerDashboard';
+import ReservationDetail from './pages/ReservationDetail';
+import CustomerProfile from './pages/CustomerProfile';
+import InvoicePage from './pages/InvoicePage';
 
 export default function App() {
   return (
@@ -25,6 +30,13 @@ export default function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/login" element={<Navigate to="/admin" />} />
 
+            {/* Customer Login & Dashboard */}
+            <Route path="/customer/login" element={<CustomerLogin />} />
+            <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+            <Route path="/customer/reservation/:id" element={<ReservationDetail />} />
+            <Route path="/customer/profile/:customerId" element={<CustomerProfile />} />
+            <Route path="/customer/invoice/:reservationId" element={<InvoicePage />} />
+
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
@@ -33,3 +45,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
