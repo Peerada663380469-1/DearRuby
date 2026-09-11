@@ -31,7 +31,6 @@ app.use(cors({
 
 app.use(express.json());
 
-import fs from 'fs';
 // Create a write stream for the access log (append mode)
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 
