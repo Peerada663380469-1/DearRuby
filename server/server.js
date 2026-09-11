@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import menuRoutes from './routes/menu.js';
@@ -29,6 +30,10 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Logger for web access (Useful for Machine Learning / Isolation Forest training)
+app.use(morgan('combined'));
+
 
 // Security headers
 app.use(helmet({
