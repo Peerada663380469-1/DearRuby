@@ -26,14 +26,14 @@ export default function CustomerLogin() {
 
     try {
       if (isLogin) {
-        const res = await api.post('/customer/login', { email, password });
-        localStorage.setItem('customer_token', res.data.token);
-        localStorage.setItem('customer_data', JSON.stringify(res.data.customer));
+        const res = await api.post('/auth/login', { email, password });
+        localStorage.setItem('customer_token', res.data.token || 'session_auth');
+        localStorage.setItem('customer_data', JSON.stringify(res.data));
         navigate('/customer/dashboard');
       } else {
-        const res = await api.post('/customer/register', { email, password, firstName, lastName, phone });
-        localStorage.setItem('customer_token', res.data.token);
-        localStorage.setItem('customer_data', JSON.stringify(res.data.customer));
+        const res = await api.post('/auth/register', { email, password, firstName, lastName, phone });
+        localStorage.setItem('customer_token', res.data.token || 'session_auth');
+        localStorage.setItem('customer_data', JSON.stringify(res.data));
         navigate('/customer/dashboard');
       }
     } catch (err) {
