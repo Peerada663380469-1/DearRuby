@@ -3,24 +3,48 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import connectPgSimple from 'connect-pg-simple';
+import crypto from 'crypto';
+import morgan from 'morgan';
+import fs from 'fs';
+
 import menuRoutes from './routes/menu.js';
+import authRoutes from './routes/auth.js';
 import reservationsRoutes from './routes/reservations.js';
 import eventsRoutes from './routes/events.js';
-import debugEmailRoutes from './routes/debugEmail.js';
-import customerAuthRoutes from './routes/customerAuth.js';
-import customerRoutes from './routes/customerRoutes.js';
+import profileRoutes from './routes/profile.js';
+import { groundTruth } from './middleware/groundTruth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.set('trust proxy', 1); // Trust first proxy (ngrok) to fix express-rate-limit error
-const PORT = process.env.PORT || 3001;
+app.set('trust proxy', 1);
 
-// CORS — restrict to frontend origin
+const PORT = process.env.PORT || 3001;
+const TESTBED = process.env.TESTBED === 'true';
+
+const PgSession = connectPgSimple(session);
+
+// Ensure log directories exist for Render
+const nginxLogDir = path.join(__dirname, '../logs/nginx');
+if (!fs.existsSync(nginxLogDir)) fs.mkdirSync(nginxLogDir, { recursive: true });
+
+// Morgan NGINX Custom Format Setup
+morgan.token('trace', (req) => req.cookies?.trace || '-');
+morgan.token('msec', () => (Date.now() / 1000).toFixed(3));
+morgan.token('referrer', (req) => req.headers.referer || req.headers.referrer || '-');
+const nginxFormat = ':msec :remote-addr - [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":trace" :response-time';
+
+const accessLogStream = fs.createWriteStream(path.join(nginxLogDir, 'idor_nginx.log'), { flags: 'a' });
+app.use(morgan(nginxFormat, { stream: accessLogStream }));
+app.use(morgan(nginxFormat)); // Also log to Render console
+
+// CORS
 app.use(cors({
   origin: function (origin, callback) {
     callback(null, true);
@@ -30,72 +54,73 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(cookieParser());
 
-// Create a write stream for the access log (append mode)
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+// Session Configuration (PostgreSQL store)
+app.use(session({
+  store: new PgSession({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true
+  }),
+  name: 'sid',
+  secret: process.env.SESSION_SECRET || 'fallback_secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { httpOnly: true, sameSite: 'lax', secure: false, maxAge: 3600000 }
+}));
 
-// Logger for web access (Apache/Nginx Combined Log Format for Machine Learning)
-// Logs to terminal
-app.use(morgan('combined'));
-// Logs to access.log file
-app.use(morgan('combined', { stream: accessLogStream }));
+// Trace Cookie Injection (for Isolation Forest logging)
+app.use((req, res, next) => {
+  if (!req.session.trace) {
+    req.session.trace = crypto.randomBytes(8).toString('hex');
+    res.cookie('trace', req.session.trace, { httpOnly: false, sameSite: 'lax' });
+  }
+  next();
+});
 
+// Ground Truth Logging Middleware
+app.use(groundTruth);
 
 // Security headers
 app.use(helmet({
-  crossOriginResourcePolicy: false, // allow images to load from other origins if needed
-  contentSecurityPolicy: false, // Disabled so Google Fonts and Unsplash images can load
+  crossOriginResourcePolicy: false,
+  contentSecurityPolicy: false,
 }));
 
-// Static file serving for uploaded food images
+// Serve static food images
 app.use('/images', express.static(path.join(__dirname, '../client/public/images')));
 
-// Ensure upload directory exists
-import fs from 'fs';
-const foodDir = path.join(__dirname, '../client/public/images/food');
-if (!fs.existsSync(foodDir)) fs.mkdirSync(foodDir, { recursive: true });
-
-// Rate limiting for login (5 attempts per minute per IP)
-const loginLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5,
-  message: { error: 'Too many login attempts. Please wait 1 minute.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-// Global Rate Limiting for all API routes (protect against basic DDoS)
+// Rate Limiting (Disabled in TESTBED mode)
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: { error: 'Too many requests from this IP, please try again after 15 minutes' },
   standardHeaders: true,
   legacyHeaders: false,
 });
-app.use('/api/', apiLimiter);
 
-// Public routes (no auth required)
+if (!TESTBED) {
+  app.use('/api/', apiLimiter);
+}
+
+// Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/reservations', reservationsRoutes);
 app.use('/api/events', eventsRoutes);
-app.use('/api/menu', menuRoutes); // Menu is now fully public
+app.use('/api/profile', profileRoutes);
+app.use('/api/menu', menuRoutes);
 
-// Customer auth (public - register/login)
-app.use('/api/customer', customerAuthRoutes);
+// Log Download Endpoints for Render
+app.get('/api/logs/access', (req, res) => {
+  const file = path.join(__dirname, '../logs/nginx/idor_nginx.log');
+  if (fs.existsSync(file)) res.download(file);
+  else res.status(404).json({ error: 'No access logs found yet.' });
+});
 
-// Customer protected routes (requires customer JWT)
-app.use('/api/customer', customerRoutes);
-
-// Debug endpoint for email testing
-app.use('/api/debug', debugEmailRoutes);
-
-// Endpoint to download the access.log file for ML training
-app.get('/api/logs/download', (req, res) => {
-  const logPath = path.join(__dirname, 'access.log');
-  if (fs.existsSync(logPath)) {
-    res.download(logPath, 'access.log');
-  } else {
-    res.status(404).send('Log file not found. Try making some requests first.');
-  }
+app.get('/api/logs/groundtruth', (req, res) => {
+  const file = path.join(__dirname, '../logs/ground_truth/app_ground_truth.csv');
+  if (fs.existsSync(file)) res.download(file);
+  else res.status(404).json({ error: 'No ground truth logs found yet.' });
 });
 
 // Health check
@@ -103,7 +128,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Serve React Frontend (Bypassing Netlify Limits)
+// Serve React Frontend
 const distPath = path.join(__dirname, '../client/dist');
 app.use(express.static(distPath));
 
@@ -111,12 +136,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
-import { seedDatabase } from './db.js';
-
-seedDatabase().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🍽️  POS Server running on http://localhost:${PORT}`); 
-});
-}).catch(err => {
-  console.error("Failed to seed database:", err);
+app.listen(PORT, () => {
+  console.log(`🍽️  POS Server running on http://localhost:${PORT} (TESTBED: ${TESTBED})`); 
 });
