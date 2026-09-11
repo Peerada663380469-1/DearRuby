@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Facebook, Instagram, Youtube, Menu, X } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Menu, X, User } from 'lucide-react';
 
 export default function Navbar({ onReservationsClick, children }) {
   const navigate = useNavigate();
@@ -148,6 +148,29 @@ export default function Navbar({ onReservationsClick, children }) {
             >
               Reservations
             </button>
+
+            <Link 
+              to="/customer/login" 
+              style={{ 
+                display: 'flex', alignItems: 'center', gap: '8px',
+                background: 'transparent', 
+                color: '#F6F4EE', 
+                padding: '10px 24px', 
+                borderRadius: 'var(--radius-sm)', 
+                border: '1px solid rgba(246, 244, 238, 0.3)', 
+                fontWeight: 600, 
+                fontSize: '0.85rem', 
+                letterSpacing: '2px', 
+                textTransform: 'uppercase', 
+                textDecoration: 'none',
+                transition: '0.2s' 
+              }} 
+              onMouseOver={e => { e.currentTarget.style.background = 'rgba(246, 244, 238, 0.1)'; }} 
+              onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}
+            >
+              <User size={16} />
+              Sign In
+            </Link>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderLeft: '1px solid rgba(246, 244, 238, 0.2)', paddingLeft: '24px' }}>
               <a href="https://www.youtube.com/watch?v=SHE8rk0l73Y" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
@@ -213,6 +236,18 @@ export default function Navbar({ onReservationsClick, children }) {
           >
             Reservations
           </button>
+          <Link 
+            to="/customer/login" 
+            onClick={() => setIsMobileMenuOpen(false)} 
+            style={{ 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              border: '1px solid var(--border)', padding: '14px', borderRadius: 'var(--radius-sm)', 
+              fontWeight: 600, fontSize: '1rem', textTransform: 'uppercase', color: 'var(--text-primary)',
+              textDecoration: 'none', marginTop: '8px'
+            }}
+          >
+            <User size={18} /> Sign In
+          </Link>
         </div>
       </div>
 
