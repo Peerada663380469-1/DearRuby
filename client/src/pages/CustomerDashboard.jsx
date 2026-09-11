@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Calendar, Clock, Users, Eye, FileText, User, LogOut, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, Users, Eye, FileText, User, LogOut, ArrowRight } from 'lucide-react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
