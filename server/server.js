@@ -31,8 +31,15 @@ app.use(cors({
 
 app.use(express.json());
 
-// Logger for web access (Useful for Machine Learning / Isolation Forest training)
+import fs from 'fs';
+// Create a write stream for the access log (append mode)
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+
+// Logger for web access (Apache/Nginx Combined Log Format for Machine Learning)
+// Logs to terminal
 app.use(morgan('combined'));
+// Logs to access.log file
+app.use(morgan('combined', { stream: accessLogStream }));
 
 
 // Security headers
@@ -81,6 +88,16 @@ app.use('/api/customer', customerRoutes);
 
 // Debug endpoint for email testing
 app.use('/api/debug', debugEmailRoutes);
+
+// Endpoint to download the access.log file for ML training
+app.get('/api/logs/download', (req, res) => {
+  const logPath = path.join(__dirname, 'access.log');
+  if (fs.existsSync(logPath)) {
+    res.download(logPath, 'access.log');
+  } else {
+    res.status(404).send('Log file not found. Try making some requests first.');
+  }
+});
 
 // Health check
 app.get('/api/health', (req, res) => {
