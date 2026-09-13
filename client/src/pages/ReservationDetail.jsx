@@ -20,9 +20,7 @@ export default function ReservationDetail() {
 
   const fetchReservation = async (token) => {
     try {
-      // [IDOR VULNERABILITY] This endpoint returns ANY reservation by ID
-      // without checking if it belongs to the logged-in customer.
-      const res = await api.get(`/customer/reservations/${id}`, {
+      const res = await api.get(`/reservations/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setReservation(res.data);

@@ -22,7 +22,7 @@ export default function CustomerProfile() {
     try {
       // [IDOR VULNERABILITY] This endpoint returns ANY customer's profile by ID
       // without checking if the requesting customer is viewing their own profile.
-      const res = await api.get(`/customer/profile/${customerId}`, {
+      const res = await api.get(`/profile?user_id=${customerId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProfile(res.data);

@@ -20,9 +20,7 @@ export default function InvoicePage() {
 
   const fetchInvoice = async (token) => {
     try {
-      // [IDOR VULNERABILITY] This endpoint returns ANY invoice by reservation ID
-      // without checking if the reservation belongs to the logged-in customer.
-      const res = await api.get(`/customer/invoices/${reservationId}`, {
+      const res = await api.get(`/reservations/${reservationId}/receipt.pdf`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setInvoice(res.data);

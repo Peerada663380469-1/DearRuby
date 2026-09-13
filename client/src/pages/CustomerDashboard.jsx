@@ -24,7 +24,7 @@ export default function CustomerDashboard() {
 
   const fetchReservations = async (token) => {
     try {
-      const res = await api.get('/customer/reservations', {
+      const res = await api.get('/reservations/mine', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setReservations(res.data);
