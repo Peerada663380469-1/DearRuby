@@ -6,7 +6,7 @@ import ReservationPage from './pages/ReservationPage';
 import BookingCheckoutPage from './pages/BookingCheckoutPage';
 import StoryPage from './pages/StoryPage';
 import EventsPage from './pages/EventsPage';
-import AdminDashboard from './pages/AdminDashboard';
+// AdminDashboard removed as per user requirements
 import CustomerLogin from './pages/CustomerLogin';
 import CustomerDashboard from './pages/CustomerDashboard';
 import ReservationDetail from './pages/ReservationDetail';
@@ -26,9 +26,7 @@ export default function App() {
             <Route path="/story" element={<StoryPage />} />
             <Route path="/events" element={<EventsPage />} />
             
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/login" element={<Navigate to="/admin" />} />
+            {/* Admin Routes Removed */}
 
             {/* Customer Login & Dashboard */}
             <Route path="/customer/login" element={<CustomerLogin />} />
