@@ -121,17 +121,17 @@ export default function MenuPage() {
       }}></div>
 
       {/* Reusable Luxury Navbar */}
-      <Navbar>
+      <Navbar hideReservations={isBookingFlow}>
         {isBookingFlow && (
-          <div className="pos-cart-actions">
-            <button onClick={() => navigate('/checkout', { state: { ...location.state, cart } })} style={{ background: 'var(--brand-red)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>
-              Checkout
-            </button>
-            <button onClick={() => setIsCartOpen(true)} style={{ background: 'none', border: 'none', color: '#F6F4EE', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', position: 'relative', transition: '0.2s' }} onMouseOver={e => e.currentTarget.style.color='var(--brand-red)'} onMouseOut={e => e.currentTarget.style.color='#F6F4EE'}>
-              <ShoppingBag size={20} /> Cart
+          <div className="pos-cart-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button onClick={() => setIsCartOpen(true)} style={{ background: 'transparent', border: '1px solid rgba(246, 244, 238, 0.3)', color: '#F6F4EE', padding: '10px 16px', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', position: 'relative', transition: '0.2s' }} onMouseOver={e => { e.currentTarget.style.background = 'rgba(246, 244, 238, 0.1)'; }} onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}>
+              <ShoppingBag size={16} /> Cart
               {cart.length > 0 && (
-                <span style={{ position: 'absolute', top: -8, right: -12, background: 'var(--brand-red)', color: '#fff', width: 20, height: 20, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem' }}>{cart.length}</span>
+                <span style={{ position: 'absolute', top: -8, right: -8, background: 'var(--brand-red)', color: '#fff', width: 20, height: 20, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem' }}>{cart.length}</span>
               )}
+            </button>
+            <button onClick={() => navigate('/checkout', { state: { ...location.state, cart } })} style={{ background: 'var(--brand-red)', border: 'none', color: '#fff', padding: '10px 24px', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', transition: '0.2s', boxShadow: '0 4px 12px rgba(138,30,32,0.3)' }} onMouseOver={e => e.currentTarget.style.background = 'var(--brand-red-dark)'} onMouseOut={e => e.currentTarget.style.background = 'var(--brand-red)'}>
+              Checkout
             </button>
           </div>
         )}

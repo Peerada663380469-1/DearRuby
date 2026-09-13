@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Menu, X, User } from 'lucide-react';
 
-export default function Navbar({ onReservationsClick, children }) {
+export default function Navbar({ onReservationsClick, children, hideReservations = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -128,27 +128,29 @@ export default function Navbar({ onReservationsClick, children }) {
             
             <div className="desktop-nav-right" style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
 
-            <button 
-              onClick={handleReservations} 
-              style={{ 
-                background: 'var(--brand-red)', 
-                color: '#fff', 
-                padding: '10px 28px', 
-                borderRadius: 'var(--radius-sm)', 
-                border: 'none', 
-                fontWeight: 600, 
-                fontSize: '0.85rem', 
-                letterSpacing: '2px', 
-                textTransform: 'uppercase', 
-                cursor: 'pointer', 
-                transition: '0.2s', 
-                boxShadow: '0 4px 12px rgba(138,30,32,0.3)' 
-              }} 
-              onMouseOver={e => { e.currentTarget.style.background = 'var(--brand-red-dark)'; }} 
-              onMouseOut={e => { e.currentTarget.style.background = 'var(--brand-red)'; }}
-            >
-              Reservations
-            </button>
+            {!hideReservations && (
+              <button 
+                onClick={handleReservations} 
+                style={{ 
+                  background: 'var(--brand-red)', 
+                  color: '#fff', 
+                  padding: '10px 24px', 
+                  borderRadius: 'var(--radius-sm)', 
+                  border: 'none', 
+                  fontWeight: 600, 
+                  fontSize: '0.85rem', 
+                  letterSpacing: '2px', 
+                  textTransform: 'uppercase', 
+                  cursor: 'pointer', 
+                  transition: '0.2s', 
+                  boxShadow: '0 4px 12px rgba(138,30,32,0.3)' 
+                }} 
+                onMouseOver={e => { e.currentTarget.style.background = 'var(--brand-red-dark)'; }} 
+                onMouseOut={e => { e.currentTarget.style.background = 'var(--brand-red)'; }}
+              >
+                Reservations
+              </button>
+            )}
 
             <Link 
               to={isLoggedIn ? "/customer/dashboard" : "/customer/login"}
