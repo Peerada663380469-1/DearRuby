@@ -93,13 +93,13 @@ export default function CustomerProfile() {
                 margin: '0 auto 16px', fontSize: '2rem', fontWeight: 700, color: '#fff',
                 fontFamily: 'var(--font-heading)', boxShadow: '0 8px 24px rgba(138,30,32,0.4)'
               }}>
-                {profile.firstName.charAt(0)}{profile.lastName.charAt(0)}
+                {profile.name ? profile.name.charAt(0) : '?'}
               </div>
               <h1 style={{
                 fontFamily: 'var(--font-heading)', fontSize: '2rem', color: '#F6F4EE',
                 fontWeight: 600, marginBottom: '4px'
               }}>
-                {profile.firstName} {profile.lastName}
+                {profile.name}
               </h1>
               <p style={{
                 color: '#8F8282', fontSize: '0.8rem', fontWeight: 600,
@@ -113,9 +113,9 @@ export default function CustomerProfile() {
             <div style={{
               background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '8px 24px'
             }}>
-              <InfoRow icon={User} label="Full Name" value={`${profile.firstName} ${profile.lastName}`} iconColor="var(--brand-red)" />
+              <InfoRow icon={User} label="Full Name" value={profile.name} iconColor="var(--brand-red)" />
               <InfoRow icon={Mail} label="Email Address" value={profile.email} iconColor="var(--gold)" />
-              <InfoRow icon={Phone} label="Phone Number" value={profile.phone} />
+              <InfoRow icon={Phone} label="Phone Number" value={profile.phone || 'N/A'} />
               <InfoRow icon={Calendar} label="Member Since" value={new Date(profile.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} iconColor="var(--brand-red)" />
             </div>
           </div>
