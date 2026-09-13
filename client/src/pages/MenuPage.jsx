@@ -52,7 +52,11 @@ export default function MenuPage() {
     api.get('/menu')
       .then(res => {
         if (res.data.items && res.data.items.length > 0) {
-          setMenuItems(res.data.items);
+          const fixedItems = res.data.items.map(dbItem => {
+            const demoMatch = demoData.items.find(d => d.name === dbItem.name);
+            return demoMatch ? { ...dbItem, image: demoMatch.image } : dbItem;
+          });
+          setMenuItems(fixedItems);
           setCategories(['All', ...res.data.categories]);
         } else {
           setMenuItems(demoData.items);

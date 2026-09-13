@@ -27,13 +27,13 @@ export default function BookingCheckoutPage() {
   const [useProfile, setUseProfile] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('customer_token');
     const data = localStorage.getItem('customer_data');
-    if (token && data) {
-      const parsed = JSON.parse(data);
-      api.get(`/profile?user_id=${parsed.id}`, { headers: { Authorization: `Bearer ${token}` } })
-        .then(res => setProfileData(res.data))
-        .catch(err => console.error(err));
+    if (data) {
+      try {
+        setProfileData(JSON.parse(data));
+      } catch (err) {
+        console.error('Failed to parse customer_data', err);
+      }
     }
   }, []);
 
