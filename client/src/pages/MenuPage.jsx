@@ -21,31 +21,30 @@ export default function MenuPage() {
   useEffect(() => {
     const demoData = {
       items: [
-        { id: 1, name: 'Burrata & Heirloom Tomato', price: 680, category: 'Starters', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=800&q=80' },
-        { id: 2, name: 'Pan-Seared Foie Gras', price: 1250, category: 'Starters', isVegetarian: false, isSpicy: false, image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80' },
-        { id: 3, name: 'Truffle Mushroom Arancini', price: 550, category: 'Starters', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?auto=format&fit=crop&w=800&q=80' },
-        { id: 4, name: 'Spicy Wagyu Carpaccio', price: 780, category: 'Starters', isVegetarian: false, isSpicy: true, image: '/images/wagyu_carpaccio.png' },
-        { id: 5, name: 'Pan-Seared Hokkaido Scallops', price: 850, category: 'Starters', isVegetarian: false, isSpicy: false, image: '/images/hokkaido_scallops.png' },
-        { id: 6, name: 'A5 Wagyu Beef Tenderloin', price: 3500, category: 'Mains', isVegetarian: false, isSpicy: false, image: 'https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=800&q=80' },
-        { id: 7, name: 'Maine Lobster Ravioli', price: 1450, category: 'Mains', isVegetarian: false, isSpicy: false, image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=800&q=80' },
-        { id: 8, name: 'Spicy Blue Crab Tagliolini', price: 950, category: 'Mains', isVegetarian: false, isSpicy: true, image: '/images/crab_tagliolini.png' },
-        { id: 9, name: 'Mediterranean Pan-Seared Seabass', price: 980, category: 'Mains', isVegetarian: false, isSpicy: false, image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80' },
-        { id: 10, name: 'Pan-Seared Duck Breast', price: 890, category: 'Mains', isVegetarian: false, isSpicy: false, image: 'https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=800&q=80' },
-        { id: 11, name: 'Pizza Margherita D.O.C.', price: 550, category: 'Artisan Pizza', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=800&q=80' },
-        { id: 12, name: 'Pizza Black Truffle & Porcini', price: 890, category: 'Artisan Pizza', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80' },
-        { id: 13, name: 'Pizza Diavola & Spicy Nduja', price: 690, category: 'Artisan Pizza', isVegetarian: false, isSpicy: true, image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=800&q=80' },
-        { id: 14, name: 'Pizza Prosciutto di Parma & Burrata', price: 850, category: 'Artisan Pizza', isVegetarian: false, isSpicy: false, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80' },
-        { id: 15, name: 'Pizza 4 Formaggi & Organic Honey', price: 680, category: 'Artisan Pizza', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80' },
-        { id: 16, name: 'Pizza Spicy Seafood Marinara', price: 890, category: 'Artisan Pizza', isVegetarian: false, isSpicy: true, image: '/images/seafood_pizza.png' },
-        { id: 17, name: 'Signature Deconstructed Tiramisu', price: 450, category: 'Desserts', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=800&q=80' },
-        { id: 18, name: 'Deconstructed Lemon Meringue Tart', price: 420, category: 'Desserts', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=800&q=80' },
-        { id: 19, name: 'Warm Belgian Chocolate Lava Cake', price: 480, category: 'Desserts', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80' },
-        { id: 20, name: 'Ruby Signature Cocktail', price: 550, category: 'Drinks', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&w=800&q=80' },
-        { id: 21, name: 'Smoked Rosemary Old Fashioned', price: 620, category: 'Drinks', isVegetarian: true, isSpicy: false, image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80' },
-        { id: 22, name: 'Alta Vigna - Cannonau di Sardegna', price: 2560, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/bottle_red_1779331900703.png' },
-        { id: 23, name: 'Vento Rosso - Sardinian Rosé', price: 1820, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/bottle_rose_1779331914384.png' },
-        { id: 24, name: 'Luce Di Terra - Isola dei Nuraghi', price: 3200, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/bottle_white_1779331929194.png' },
-        { id: 25, name: 'Étoile d\'Or - Vintage Champagne Brut', price: 6500, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/wine_champagne.png' }
+        { id: 1, name: 'Burrata & Heirloom Tomato', price: 680, category: 'Starters', isVegetarian: true, isSpicy: false, image: '/images/Burrata-Heirloom-Tomato.png' },
+        { id: 2, name: 'Pan-Seared Foie Gras', price: 1250, category: 'Starters', isVegetarian: false, isSpicy: false, image: '/images/Pan-Seared-Foie-Gras.png' },
+        { id: 3, name: 'Truffle Mushroom Arancini', price: 550, category: 'Starters', isVegetarian: true, isSpicy: false, image: '/images/TruffleMushroom-Arancini.png' },
+        { id: 4, name: 'Spicy Wagyu Carpaccio', price: 780, category: 'Starters', isVegetarian: false, isSpicy: true, image: '/images/SpicyWagyuCarpaccio.png' },
+        { id: 5, name: 'Pan-Seared Hokkaido Scallops', price: 850, category: 'Starters', isVegetarian: false, isSpicy: false, image: '/images/Pan-SearedHokkaidoScallops.png' },
+        { id: 6, name: 'A5 Wagyu Beef Tenderloin', price: 3500, category: 'Mains', isVegetarian: false, isSpicy: false, image: '/images/A5WagyuBeefTenderloin.png' },
+        { id: 7, name: 'Maine Lobster Ravioli', price: 1450, category: 'Mains', isVegetarian: false, isSpicy: false, image: '/images/MaineLobsterRavioli.png' },
+        { id: 8, name: 'Spicy Blue Crab Tagliolini', price: 950, category: 'Mains', isVegetarian: false, isSpicy: true, image: '/images/SpicyBlueCrabTagliolini.png' },
+        { id: 9, name: 'Mediterranean Pan-Seared Seabass', price: 980, category: 'Mains', isVegetarian: false, isSpicy: false, image: '/images/Mediterranean Pan-Seared Seabass.png' },
+        { id: 10, name: 'Pan-Seared Duck Breast', price: 890, category: 'Mains', isVegetarian: false, isSpicy: false, image: '/images/Pan-Seared Duck Breast.png' },
+        { id: 11, name: 'Pizza Margherita D.O.C.', price: 550, category: 'Artisan Pizza', isVegetarian: true, isSpicy: false, image: '/images/Pizza Margherita D.O.C..png' },
+        { id: 12, name: 'Pizza Black Truffle & Porcini', price: 890, category: 'Artisan Pizza', isVegetarian: true, isSpicy: false, image: '/images/Pizza Black Truffle & Porcini.png' },
+        { id: 13, name: 'Pizza Diavola & Spicy Nduja', price: 690, category: 'Artisan Pizza', isVegetarian: false, isSpicy: true, image: '/images/Pizza Diavola & Spicy Nduja.png' },
+        { id: 14, name: 'Pizza Prosciutto di Parma & Burrata', price: 850, category: 'Artisan Pizza', isVegetarian: false, isSpicy: false, image: '/images/Pizza Prosciutto di Parma & Burrata.png' },
+        { id: 15, name: 'Pizza 4 Formaggi & Organic Honey', price: 680, category: 'Artisan Pizza', isVegetarian: true, isSpicy: false, image: '/images/Pizza 4 Formaggi & Organic Honey.png' },
+        { id: 16, name: 'Pizza Spicy Seafood Marinara', price: 890, category: 'Artisan Pizza', isVegetarian: false, isSpicy: true, image: '/images/Pizza Spicy Seafood Marinara.png' },
+        { id: 17, name: 'Signature Deconstructed Tiramisu', price: 450, category: 'Desserts', isVegetarian: true, isSpicy: false, image: '/images/Signature Deconstructed Tiramisu.png' },
+        { id: 18, name: 'Deconstructed Lemon Meringue Tart', price: 420, category: 'Desserts', isVegetarian: true, isSpicy: false, image: '/images/Deconstructed Lemon Meringue Tart.png' },
+        { id: 19, name: 'Warm Belgian Chocolate Lava Cake', price: 480, category: 'Desserts', isVegetarian: true, isSpicy: false, image: '/images/Warm Belgian Chocolate Lava Cake.png' },
+        { id: 20, name: 'Ruby Signature Cocktail', price: 550, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Ruby Signature Cocktail.png' },
+        { id: 21, name: 'Smoked Rosemary Old Fashioned', price: 620, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Smoked Rosemary Old Fashioned.png' },
+        { id: 22, name: 'Alta Vigna - Cannonau di Sardegna', price: 2560, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/Alta Vigna - Cannonau di Sardegna.png' },
+        { id: 23, name: 'Vento Rosso - Sardinian Rosé', price: 1820, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/Vento Rosso - Sardinian Rosé wine.png' },
+        { id: 24, name: 'Luce Di Terra - Isola dei Nuraghi', price: 3200, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/Luce Di Terra - Isola dei Nuraghi.png' }
       ],
       categories: ['Starters', 'Mains', 'Artisan Pizza', 'Desserts', 'Drinks', 'Premium Wines']
     };
@@ -176,7 +175,7 @@ export default function MenuPage() {
         {filteredMenu.map(item => (
           <div key={item.id} style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ position: 'relative', width: '100%', paddingTop: '100%', overflow: 'hidden', borderRadius: 'var(--radius-md)', marginBottom: 24, background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(246, 244, 238, 0.1)' }}>
-              <img src={item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'} onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }} alt={item.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? 'contain' : 'cover', objectPosition: item.name === 'Madagascar Vanilla Crème Brûlée' ? '80% 50%' : (item.name.includes('Tokyo Sour') ? '80% 50%' : 'center'), transition: 'transform 0.5s ease', padding: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? '20px' : '0' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
+              <img src={item.image} onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }} alt={item.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? 'contain' : 'cover', objectPosition: item.name === 'Madagascar Vanilla Crème Brûlée' ? '80% 50%' : (item.name.includes('Tokyo Sour') ? '80% 50%' : 'center'), transition: 'transform 0.5s ease', padding: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? '20px' : '0' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
             </div>
             
             {/* Title with single clean header */}
