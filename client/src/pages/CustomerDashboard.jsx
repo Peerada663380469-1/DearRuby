@@ -123,7 +123,7 @@ export default function CustomerDashboard() {
             <p style={{ color: '#8F8282', marginBottom: '24px' }}>
               You haven't made any reservations. Book your table now!
             </p>
-            <Link to="/" style={{
+            <Link to="/" state={{ openReservations: true }} style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               padding: '14px 32px', background: 'var(--brand-red)', color: '#fff',
               borderRadius: '8px', fontWeight: 600, letterSpacing: '1px',
