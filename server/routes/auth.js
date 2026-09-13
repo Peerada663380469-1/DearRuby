@@ -33,10 +33,11 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, pin } = req.body;
+    const { email, password, pin } = req.body;
+    const loginPin = password || pin;
     const user = await prisma.user.findUnique({ where: { email } });
     
-    if (!user || !bcrypt.compareSync(pin, user.pin_hash)) {
+    if (!user || !loginPin || !bcrypt.compareSync(loginPin, user.pin_hash)) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
