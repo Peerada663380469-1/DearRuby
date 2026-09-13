@@ -156,7 +156,7 @@ export default function Navbar({ onReservationsClick, children }) {
                 display: 'flex', alignItems: 'center', gap: '8px',
                 background: 'transparent', 
                 color: '#F6F4EE', 
-                padding: '10px 24px', 
+                padding: '10px 16px', 
                 borderRadius: 'var(--radius-sm)', 
                 border: '1px solid rgba(246, 244, 238, 0.3)', 
                 fontWeight: 600, 
@@ -170,7 +170,7 @@ export default function Navbar({ onReservationsClick, children }) {
               onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}
             >
               <User size={16} />
-              {isLoggedIn ? 'Dashboard' : 'Sign In'}
+              {isLoggedIn ? 'Profile' : 'Sign In'}
             </Link>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderLeft: '1px solid rgba(246, 244, 238, 0.2)', paddingLeft: '24px' }}>
@@ -247,7 +247,7 @@ export default function Navbar({ onReservationsClick, children }) {
               textDecoration: 'none', marginTop: '8px'
             }}
           >
-            <User size={18} /> {isLoggedIn ? 'Dashboard' : 'Sign In'}
+            <User size={18} /> {isLoggedIn ? 'Profile' : 'Sign In'}
           </Link>
         </div>
       </div>

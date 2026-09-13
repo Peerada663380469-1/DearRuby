@@ -122,7 +122,7 @@ export default function MenuPage() {
         {isBookingFlow && (
           <div className="pos-cart-actions">
             <button onClick={() => navigate('/checkout', { state: { ...location.state, cart } })} style={{ background: 'var(--brand-red)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>
-              {cart.length > 0 ? "Checkout" : "Skip to Checkout"}
+              Checkout
             </button>
             <button onClick={() => setIsCartOpen(true)} style={{ background: 'none', border: 'none', color: '#F6F4EE', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', position: 'relative', transition: '0.2s' }} onMouseOver={e => e.currentTarget.style.color='var(--brand-red)'} onMouseOut={e => e.currentTarget.style.color='#F6F4EE'}>
               <ShoppingBag size={20} /> Cart
@@ -173,7 +173,7 @@ export default function MenuPage() {
         {filteredMenu.map(item => (
           <div key={item.id} style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ position: 'relative', width: '100%', paddingTop: '100%', overflow: 'hidden', borderRadius: 'var(--radius-md)', marginBottom: 24, background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(246, 244, 238, 0.1)' }}>
-              <img src={item.image} alt={item.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? 'contain' : 'cover', objectPosition: item.name === 'Madagascar Vanilla Crème Brûlée' ? '80% 50%' : (item.name.includes('Tokyo Sour') ? '80% 50%' : 'center'), transition: 'transform 0.5s ease', padding: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? '20px' : '0' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
+              <img src={item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'} onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }} alt={item.name} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? 'contain' : 'cover', objectPosition: item.name === 'Madagascar Vanilla Crème Brûlée' ? '80% 50%' : (item.name.includes('Tokyo Sour') ? '80% 50%' : 'center'), transition: 'transform 0.5s ease', padding: (item.category === 'Premium Wines' || item.name.includes('Evian')) ? '20px' : '0' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
             </div>
             
             {/* Title with single clean header */}
