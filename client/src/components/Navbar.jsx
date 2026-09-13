@@ -6,6 +6,7 @@ export default function Navbar({ onReservationsClick, children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isLoggedIn = !!localStorage.getItem('customer_token');
 
   const handleReservations = () => {
     if (onReservationsClick) {
@@ -150,7 +151,7 @@ export default function Navbar({ onReservationsClick, children }) {
             </button>
 
             <Link 
-              to="/customer/login" 
+              to={isLoggedIn ? "/customer/dashboard" : "/customer/login"}
               style={{ 
                 display: 'flex', alignItems: 'center', gap: '8px',
                 background: 'transparent', 
@@ -169,7 +170,7 @@ export default function Navbar({ onReservationsClick, children }) {
               onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}
             >
               <User size={16} />
-              Sign In
+              {isLoggedIn ? 'Dashboard' : 'Sign In'}
             </Link>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderLeft: '1px solid rgba(246, 244, 238, 0.2)', paddingLeft: '24px' }}>
@@ -237,7 +238,7 @@ export default function Navbar({ onReservationsClick, children }) {
             Reservations
           </button>
           <Link 
-            to="/customer/login" 
+            to={isLoggedIn ? "/customer/dashboard" : "/customer/login"}
             onClick={() => setIsMobileMenuOpen(false)} 
             style={{ 
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
@@ -246,7 +247,7 @@ export default function Navbar({ onReservationsClick, children }) {
               textDecoration: 'none', marginTop: '8px'
             }}
           >
-            <User size={18} /> Sign In
+            <User size={18} /> {isLoggedIn ? 'Dashboard' : 'Sign In'}
           </Link>
         </div>
       </div>

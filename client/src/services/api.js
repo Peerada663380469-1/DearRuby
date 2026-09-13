@@ -9,7 +9,8 @@ const api = axios.create({
   headers: { 
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': '69420'
-  }
+  },
+  withCredentials: true
 });
 
 api.interceptors.request.use(config => {
@@ -21,10 +22,6 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
   res => res,
   err => {
-    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-      sessionStorage.removeItem('ruby_admin_key');
-      window.location.href = '/admin';
-    }
     return Promise.reject(err);
   }
 );
