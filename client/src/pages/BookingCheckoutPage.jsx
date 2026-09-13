@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Clock, Users, Calendar, Lock } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
-import { BACKEND_URL } from '../services/api';
+import api, { BACKEND_URL } from '../services/api';
 
 export default function BookingCheckoutPage() {
   const navigate = useNavigate();
@@ -22,6 +22,35 @@ export default function BookingCheckoutPage() {
   const [dietary, setDietary] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
+
+  const [profileData, setProfileData] = useState(null);
+  const [useProfile, setUseProfile] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('customer_token');
+    const data = localStorage.getItem('customer_data');
+    if (token && data) {
+      const parsed = JSON.parse(data);
+      api.get(`/profile?user_id=${parsed.id}`, { headers: { Authorization: `Bearer ${token}` } })
+        .then(res => setProfileData(res.data))
+        .catch(err => console.error(err));
+    }
+  }, []);
+
+  const handleUseProfileToggle = (e) => {
+    const checked = e.target.checked;
+    setUseProfile(checked);
+    if (checked && profileData) {
+      const names = profileData.name.split(' ');
+      setFirstName(names[0] || '');
+      setLastName(names.slice(1).join(' ') || '');
+      setEmail(profileData.email || '');
+    } else {
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+    }
+  };
 
   const handleExpiryChange = (e) => {
     let val = e.target.value.replace(/\D/g, '');
@@ -103,6 +132,14 @@ export default function BookingCheckoutPage() {
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', marginBottom: 32, fontWeight: 400 }}>Complete Your Booking</h1>
 
           {/* Guest Details */}
+          {profileData && (
+            <div style={{ marginBottom: 24, background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(246, 244, 238, 0.1)' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={useProfile} onChange={handleUseProfileToggle} style={{ width: 18, height: 18, accentColor: 'var(--brand-red)' }} />
+                <span>Autofill with my account information</span>
+              </label>
+            </div>
+          )}
           <div className="mobile-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 48 }}>
             <div>
               <label style={labelStyle}>First name *</label>
