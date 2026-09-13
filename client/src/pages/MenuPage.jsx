@@ -44,7 +44,14 @@ export default function MenuPage() {
         { id: 21, name: 'Smoked Rosemary Old Fashioned', price: 620, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Smoked Rosemary Old Fashioned.png' },
         { id: 22, name: 'Alta Vigna - Cannonau di Sardegna', price: 2560, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/Alta Vigna - Cannonau di Sardegna.png' },
         { id: 23, name: 'Vento Rosso - Sardinian Rosé', price: 1820, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/Vento Rosso - Sardinian Rosé wine.png' },
-        { id: 24, name: 'Luce Di Terra - Isola dei Nuraghi', price: 3200, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/Luce Di Terra - Isola dei Nuraghi.png' }
+        { id: 24, name: 'Luce Di Terra - Isola dei Nuraghi', price: 3200, category: 'Premium Wines', isVegetarian: true, isSpicy: false, image: '/images/Luce Di Terra - Isola dei Nuraghi.png' },
+        { id: 100, name: 'Evian Mineral Water', price: 150, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Evian Mineral Water.png' },
+        { id: 101, name: 'Tokyo Sour', price: 480, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Tokyo Sour.png' },
+        { id: 102, name: 'Madagascar Vanilla Crème Brûlée', price: 420, category: 'Desserts', isVegetarian: true, isSpicy: false, image: '/images/Madagascar Vanilla Crème Brûlée.png' },
+        { id: 103, name: 'Lychee Martini', price: 450, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Lychee Martini.png' },
+        { id: 104, name: 'Midnight Espresso Martini', price: 480, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Midnight Espresso Martini.png' },
+        { id: 105, name: 'Sunset Aperol Spritz', price: 520, category: 'Drinks', isVegetarian: true, isSpicy: false, image: '/images/Sunset Aperol Spritz.png' },
+        { id: 106, name: 'Spicy Mango Margarita', price: 460, category: 'Drinks', isVegetarian: true, isSpicy: true, image: '/images/Spicy Mango Margarita.png' }
       ],
       categories: ['Starters', 'Mains', 'Artisan Pizza', 'Desserts', 'Drinks', 'Premium Wines']
     };
@@ -56,8 +63,12 @@ export default function MenuPage() {
             const demoMatch = demoData.items.find(d => d.name === dbItem.name);
             return demoMatch ? { ...dbItem, image: demoMatch.image } : dbItem;
           });
-          setMenuItems(fixedItems);
-          setCategories(['All', ...res.data.categories]);
+          const missingFromDb = demoData.items.filter(d => !res.data.items.some(dbItem => dbItem.name === d.name));
+          setMenuItems([...fixedItems, ...missingFromDb]);
+          
+          // Ensure we merge categories from both DB and demoData just in case
+          const allCategories = new Set(['All', ...res.data.categories, ...demoData.categories]);
+          setCategories(Array.from(allCategories));
         } else {
           setMenuItems(demoData.items);
           setCategories(['All', ...demoData.categories]);
@@ -70,7 +81,7 @@ export default function MenuPage() {
         setCategories(['All', ...demoData.categories]);
         setLoading(false);
       });
-  }, []);
+  }, ['force-reload-1']);
 
   const categoryOrder = ['Starters', 'Mains', 'Artisan Pizza', 'Desserts', 'Drinks', 'Premium Wines'];
   const filteredMenu = menuItems
