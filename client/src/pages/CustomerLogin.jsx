@@ -14,6 +14,7 @@ export default function CustomerLogin() {
 
   // Form fields
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -25,12 +26,12 @@ export default function CustomerLogin() {
 
     try {
       if (isLogin) {
-        const res = await api.post('/auth/login', { email });
+        const res = await api.post('/auth/login', { email, password });
         localStorage.setItem('customer_token', res.data.token || 'session_auth');
         localStorage.setItem('customer_data', JSON.stringify(res.data));
         navigate('/customer/dashboard');
       } else {
-        const res = await api.post('/auth/register', { email, firstName, lastName, phone });
+        const res = await api.post('/auth/register', { email, password, firstName, lastName, phone });
         localStorage.setItem('customer_token', res.data.token || 'session_auth');
         localStorage.setItem('customer_data', JSON.stringify(res.data));
         navigate('/customer/dashboard');
@@ -153,7 +154,22 @@ export default function CustomerLogin() {
               </div>
             </div>
 
-            {/* Password removed for TESTBED */}
+            {/* Password */}
+            <div style={{ marginBottom: '32px' }}>
+              <label style={labelStyle}>Password</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#8F8282' }} />
+                <input
+                  type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password}
+                  onChange={e => setPassword(e.target.value)} required minLength={4}
+                  style={inputStyle}
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#8F8282', cursor: 'pointer' }}>
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
 
             {/* Submit */}
             <button type="submit" disabled={loading} style={{
