@@ -15,6 +15,19 @@ router.post('/', requireLogin, async (req, res) => {
   }
 });
 
+// [Support] List mine events
+router.get('/mine', requireLogin, async (req, res) => {
+  try {
+    const r = await prisma.eventInquiry.findMany({
+      where: { userId: req.session.userId },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(r);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch' });
+  }
+});
+
 // [V5] Vulnerable Event Inquiry View
 router.get('/:id', requireLogin, async (req, res) => {
   const id = parseInt(req.params.id);

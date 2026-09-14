@@ -8,6 +8,7 @@ import Footer from '../components/Footer';
 export default function CustomerDashboard() {
   const navigate = useNavigate();
   const [reservations, setReservations] = useState([]);
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [customerData, setCustomerData] = useState(null);
 
@@ -24,10 +25,12 @@ export default function CustomerDashboard() {
 
   const fetchReservations = async (token) => {
     try {
-      const res = await api.get('/reservations/mine', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setReservations(res.data);
+      const [resRes, eventRes] = await Promise.all([
+        api.get('/reservations/mine', { headers: { Authorization: `Bearer ${token}` } }),
+        api.get('/events/mine', { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      setReservations(resRes.data);
+      setEvents(eventRes.data);
     } catch (err) {
       if (err.response?.status === 401) {
         localStorage.removeItem('customer_token');
@@ -195,6 +198,49 @@ export default function CustomerDashboard() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Private Events Section */}
+        {events.length > 0 && (
+          <div style={{ marginTop: '60px' }}>
+            <h2 style={{
+              fontFamily: 'var(--font-heading)', fontSize: '2rem', color: '#F6F4EE',
+              fontWeight: 600, marginBottom: '24px'
+            }}>
+              Private Events
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {events.map((e) => {
+                const status = statusColors[e.status] || statusColors.pending;
+                return (
+                  <div key={e.id} style={{
+                    background: 'rgba(10,10,10,0.7)', backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(246,244,238,0.1)', borderRadius: '12px',
+                    padding: '24px 28px', display: 'flex', alignItems: 'center',
+                    justifyContent: 'space-between', gap: '20px', transition: '0.2s'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '32px', flex: 1, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '140px' }}>
+                        <Calendar size={18} style={{ color: 'var(--brand-red)' }} />
+                        <span style={{ color: '#F6F4EE', fontWeight: 500 }}>{e.eventDate}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Users size={18} style={{ color: '#8F8282' }} />
+                        <span style={{ color: '#C8C4B7' }}>{e.guestCount} guests</span>
+                      </div>
+                      <span style={{
+                        padding: '4px 14px', borderRadius: '20px', fontSize: '0.75rem',
+                        fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px',
+                        background: status.bg, color: status.color
+                      }}>
+                        {status.label}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
