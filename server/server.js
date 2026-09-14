@@ -182,6 +182,23 @@ app.post('/api/admin/seed-menu', async (req, res) => {
   }
 });
 
+// Clear DB Endpoint for Render
+app.post('/api/admin/clear-db', async (req, res) => {
+  if (req.query.key !== 'CY36-PHASE2') return res.status(403).json({ error: 'Invalid key' });
+  try {
+    const prisma = (await import('./db.js')).default;
+    await prisma.reservation.deleteMany({});
+    await prisma.user.deleteMany({});
+    // Reset sequences
+    await prisma.$executeRawUnsafe(`SELECT setval('"User_id_seq"', 1, false);`);
+    await prisma.$executeRawUnsafe(`SELECT setval('"Reservation_id_seq"', 1, false);`);
+    res.json({ ok: true, message: 'Cleared all users and reservations' });
+  } catch (err) {
+    console.error('Clear DB error:', err);
+    res.status(500).json({ error: 'Clear DB failed', details: err.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
