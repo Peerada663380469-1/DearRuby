@@ -195,6 +195,15 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`🍽️  POS Server running on http://localhost:${PORT} (TESTBED: ${TESTBED})`); 
+app.listen(PORT, async () => {
+  console.log(`🍽️  POS Server running on http://localhost:${PORT} (TESTBED: ${TESTBED})`);
+  // Run migrate deploy in background after port is open (so Render detects it)
+  try {
+    const { execSync } = await import('child_process');
+    console.log('Running prisma migrate deploy...');
+    execSync('npx prisma migrate deploy', { cwd: path.resolve(__dirname), stdio: 'inherit', timeout: 30000 });
+    console.log('✅ Prisma migrate deploy completed.');
+  } catch (err) {
+    console.warn('⚠️  Prisma migrate deploy skipped or failed:', err.message);
+  }
 });
