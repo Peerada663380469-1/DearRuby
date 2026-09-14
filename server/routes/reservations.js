@@ -130,7 +130,36 @@ router.get('/:id/receipt.pdf', requireLogin, async (req, res) => {
   
   markGT(res, '/api/reservations/{id}/receipt.pdf', id, r.userId);
   // VULNERABLE: No ownership check
-  res.json({ pdfData: 'mock_pdf_binary_content_for_reservation_' + id });
+  let preOrderItems = [];
+  try {
+    if (r.preOrderJson) preOrderItems = JSON.parse(r.preOrderJson);
+  } catch (e) {}
+  
+  let subtotal = 0;
+  preOrderItems.forEach(item => {
+    subtotal += (item.price || 0) * (item.quantity || 1);
+  });
+  const vat = subtotal * 0.07;
+  const total = subtotal + vat;
+
+  res.json({
+    invoiceNumber: `INV-${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2, '0')}-${String(r.id).padStart(4, '0')}`,
+    issuedAt: r.createdAt,
+    reservation: {
+      firstName: r.firstName,
+      lastName: r.lastName,
+      email: r.email,
+      phone: r.phone,
+      date: r.date,
+      time: r.time,
+      guests: r.guests
+    },
+    preOrderItems,
+    subtotal,
+    vat,
+    total,
+    pdfData: 'mock_pdf_binary_content_for_reservation_' + id
+  });
 });
 
 // [V1] Vulnerable direct ID path (Must be last to not shadow other routes)
