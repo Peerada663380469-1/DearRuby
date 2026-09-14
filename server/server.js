@@ -123,6 +123,65 @@ app.get('/api/logs/groundtruth', (req, res) => {
   else res.status(404).json({ error: 'No ground truth logs found yet.' });
 });
 
+// Seed Endpoint for Render (no CLI access)
+app.post('/api/admin/seed', async (req, res) => {
+  if (!TESTBED) return res.status(403).json({ error: 'Seed disabled in production' });
+  try {
+    const { execSync } = await import('child_process');
+    execSync('node prisma/seed.js', { cwd: path.resolve(__dirname), stdio: 'pipe', timeout: 60000 });
+    res.json({ ok: true, message: 'Seed completed successfully' });
+  } catch (err) {
+    console.error('Seed error:', err.stderr?.toString() || err.message);
+    res.status(500).json({ error: 'Seed failed', details: err.stderr?.toString() || err.message });
+  }
+});
+
+// Seed Menu Items for Render
+app.post('/api/admin/seed-menu', async (req, res) => {
+  if (!TESTBED) return res.status(403).json({ error: 'Seed disabled in production' });
+  try {
+    const prisma = (await import('./db.js')).default;
+    const count = await prisma.menuItem.count();
+    if (count > 0) return res.json({ ok: true, message: `Menu already has ${count} items, skipping.` });
+    
+    const menuItems = [
+      { name: 'Burrata & Heirloom Tomato', price: 680, category: 'Starters', isVegetarian: true },
+      { name: 'Pan-Seared Foie Gras', price: 1250, category: 'Starters' },
+      { name: 'Truffle Mushroom Arancini', price: 550, category: 'Starters', isVegetarian: true },
+      { name: 'Spicy Wagyu Carpaccio', price: 780, category: 'Starters', isSpicy: true },
+      { name: 'Pan-Seared Hokkaido Scallops', price: 850, category: 'Starters' },
+      { name: 'A5 Wagyu Beef Tenderloin', price: 3500, category: 'Mains' },
+      { name: 'Maine Lobster Ravioli', price: 1450, category: 'Mains' },
+      { name: 'Spicy Blue Crab Tagliolini', price: 950, category: 'Mains', isSpicy: true },
+      { name: 'Mediterranean Pan-Seared Seabass', price: 980, category: 'Mains' },
+      { name: 'Pan-Seared Duck Breast', price: 890, category: 'Mains' },
+      { name: 'Pizza Margherita D.O.C.', price: 550, category: 'Artisan Pizza', isVegetarian: true },
+      { name: 'Pizza Black Truffle & Porcini', price: 890, category: 'Artisan Pizza', isVegetarian: true },
+      { name: 'Pizza Diavola & Spicy Nduja', price: 690, category: 'Artisan Pizza', isSpicy: true },
+      { name: 'Pizza Prosciutto di Parma & Burrata', price: 850, category: 'Artisan Pizza' },
+      { name: 'Pizza 4 Formaggi & Organic Honey', price: 680, category: 'Artisan Pizza', isVegetarian: true },
+      { name: 'Pizza Spicy Seafood Marinara', price: 890, category: 'Artisan Pizza', isSpicy: true },
+      { name: 'Signature Deconstructed Tiramisu', price: 450, category: 'Desserts', isVegetarian: true },
+      { name: 'Deconstructed Lemon Meringue Tart', price: 420, category: 'Desserts', isVegetarian: true },
+      { name: 'Warm Belgian Chocolate Lava Cake', price: 480, category: 'Desserts', isVegetarian: true },
+      { name: 'Ruby Signature Cocktail', price: 550, category: 'Drinks', isVegetarian: true },
+      { name: 'Smoked Rosemary Old Fashioned', price: 620, category: 'Drinks', isVegetarian: true },
+      { name: 'Evian Natural Spring Water', price: 180, category: 'Drinks', isVegetarian: true },
+      { name: 'San Pellegrino Sparkling', price: 200, category: 'Drinks', isVegetarian: true },
+      { name: 'Tokyo Sour Cocktail', price: 520, category: 'Drinks', isVegetarian: true },
+      { name: 'Lavender Collins', price: 490, category: 'Drinks', isVegetarian: true },
+      { name: 'Alta Vigna - Cannonau di Sardegna', price: 2560, category: 'Premium Wines', isVegetarian: true },
+      { name: 'Vento Rosso - Sardinian Rosé', price: 1820, category: 'Premium Wines', isVegetarian: true },
+      { name: 'Luce Di Terra - Isola dei Nuraghi', price: 3200, category: 'Premium Wines', isVegetarian: true },
+    ];
+    await prisma.menuItem.createMany({ data: menuItems });
+    res.json({ ok: true, message: `Seeded ${menuItems.length} menu items` });
+  } catch (err) {
+    console.error('Menu seed error:', err);
+    res.status(500).json({ error: 'Menu seed failed', details: err.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
