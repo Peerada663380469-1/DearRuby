@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "npx prisma migrate deploy && node server.js",
     "dev": "node --watch server.js",
-    "build": "npm install && cd ../client && npm install && npm run build && cd ../server && npx prisma generate && npx prisma migrate deploy",
+    "build": "npm install && cd ../client && npm install && npm run build && cd ../server && npx prisma generate",
     "db:reset": "prisma migrate reset --force && node prisma/seed.js",
     "db:dump": "pg_dump -U idor -d idor_testbed -F c -f ./snapshots/dataset.dump"
   },
