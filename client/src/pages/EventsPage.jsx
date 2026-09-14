@@ -28,7 +28,7 @@ export default function EventsPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post('/events/inquiry', {
+      await api.post('/events', {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,

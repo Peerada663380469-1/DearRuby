@@ -76,6 +76,7 @@ export default function BookingCheckoutPage() {
     try {
       const res = await fetch(`${BACKEND_URL}/api/reservations`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 
           'Content-Type': 'application/json',
           'ngrok-skip-browser-warning': '69420'
