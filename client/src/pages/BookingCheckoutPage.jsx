@@ -91,16 +91,16 @@ export default function BookingCheckoutPage() {
       });
       if (res.ok) {
         alert("Payment successful! Your reservation and dining selection are confirmed.");
-        navigate('/');
+        navigate('/customer/dashboard');
+      } else if (res.status === 401) {
+        alert("Please login or register first to complete your reservation.");
+        navigate('/customer/login');
       } else {
-        console.warn("Failed to confirm reservation with server, simulating demo success.");
-        alert("[DEMO MODE] Payment successful! Your reservation and dining selection are confirmed.");
-        navigate('/');
+        alert("Failed to save reservation. Please try again.");
       }
     } catch (error) {
-      console.error("Network error, simulating demo success.", error);
-      alert("[DEMO MODE] Payment successful! Your reservation and dining selection are confirmed.");
-      navigate('/');
+      console.error("Network error:", error);
+      alert("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
