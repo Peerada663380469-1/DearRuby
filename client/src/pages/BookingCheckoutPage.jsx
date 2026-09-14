@@ -86,7 +86,7 @@ export default function BookingCheckoutPage() {
           specialRequests: purpose,
           serviceType: 'Dine-in',
           dietary,
-          preOrderJson: cart.length > 0 ? cart : null
+          preOrderJson: cart.length > 0 ? JSON.stringify(cart) : null
         })
       });
       if (res.ok) {
