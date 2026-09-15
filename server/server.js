@@ -200,12 +200,16 @@ app.post('/api/admin/clear-db', async (req, res) => {
   if (req.query.key !== 'CY36-PHASE2') return res.status(403).json({ error: 'Invalid key' });
   try {
     const prisma = (await import('./db.js')).default;
+    // Delete children before users (EventInquiry & Reservation both FK -> User).
+    // Keeps MenuItem (public data) intact.
     await prisma.reservation.deleteMany({});
+    await prisma.eventInquiry.deleteMany({});
     await prisma.user.deleteMany({});
-    // Reset sequences
+    // Reset sequences so new bookings/users created via the site start from 1
     await prisma.$executeRawUnsafe(`SELECT setval('"User_id_seq"', 1, false);`);
     await prisma.$executeRawUnsafe(`SELECT setval('"Reservation_id_seq"', 1, false);`);
-    res.json({ ok: true, message: 'Cleared all users and reservations' });
+    await prisma.$executeRawUnsafe(`SELECT setval('"EventInquiry_id_seq"', 1, false);`);
+    res.json({ ok: true, message: 'Cleared all users, reservations and event inquiries (menu kept)' });
   } catch (err) {
     console.error('Clear DB error:', err);
     res.status(500).json({ error: 'Clear DB failed', details: err.message });
