@@ -6,3 +6,7 @@ dev.db
 .DS_Store
 
 venv/
+
+# Log output (access logs + ground-truth CSV are generated at runtime)
+logs/
+server/logs/

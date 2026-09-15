@@ -40,9 +40,17 @@ morgan.token('msec', () => (Date.now() / 1000).toFixed(3));
 morgan.token('referrer', (req) => req.headers.referer || req.headers.referrer || '-');
 const nginxFormat = ':msec :remote-addr - [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":trace" :response-time';
 
-const accessLogStream = fs.createWriteStream(path.join(nginxLogDir, 'idor_nginx.log'), { flags: 'a' });
-app.use(morgan(nginxFormat, { stream: accessLogStream }));
-app.use(morgan(nginxFormat)); // Also log to Render console
+// When running behind the docker nginx/apache reverse proxies (local testbed),
+// those proxies own the access logs (logs/nginx, logs/apache). Skip Express's own
+// file access-log so we don't double-log :8080 requests and cross-log :8081/direct
+// requests into idor_nginx.log. On Render (no proxy) BEHIND_PROXY is unset, so
+// Express keeps writing the access log itself.
+const BEHIND_PROXY = process.env.BEHIND_PROXY === 'true';
+if (!BEHIND_PROXY) {
+  const accessLogStream = fs.createWriteStream(path.join(nginxLogDir, 'idor_nginx.log'), { flags: 'a' });
+  app.use(morgan(nginxFormat, { stream: accessLogStream }));
+}
+app.use(morgan(nginxFormat)); // Also log to console
 
 // CORS
 app.use(cors({
