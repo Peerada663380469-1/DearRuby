@@ -28,14 +28,18 @@ export default function BookingCheckoutPage() {
 
   useEffect(() => {
     const data = localStorage.getItem('customer_data');
-    if (data) {
-      try {
-        setProfileData(JSON.parse(data));
-      } catch (err) {
-        console.error('Failed to parse customer_data', err);
-      }
+    if (!data) {
+      // Enforce login before booking — no reservation without an account.
+      alert('Please sign in to your account before making a reservation.');
+      navigate('/customer/login');
+      return;
     }
-  }, []);
+    try {
+      setProfileData(JSON.parse(data));
+    } catch (err) {
+      console.error('Failed to parse customer_data', err);
+    }
+  }, [navigate]);
 
   const handleUseProfileToggle = (e) => {
     const checked = e.target.checked;

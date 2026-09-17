@@ -34,9 +34,15 @@ export default function ReservationPage() {
 
   useEffect(() => {
     if (location.state?.openReservations) {
-      setActiveModal('guests');
-      // Clear location state to prevent modal from reopening on subsequent refreshes
+      // Clear location state so the modal doesn't reopen on refresh
       navigate(location.pathname, { replace: true, state: {} });
+      // Enforce login before booking
+      if (!localStorage.getItem('customer_data')) {
+        alert('Please sign in to your account before making a reservation.');
+        navigate('/customer/login');
+        return;
+      }
+      setActiveModal('guests');
     }
   }, [location.state, navigate, location.pathname]);
 
@@ -67,7 +73,14 @@ export default function ReservationPage() {
         </div>
 
         <div className="home-action-buttons">
-          <button className="home-btn-primary" onClick={() => setActiveModal('guests')}>
+          <button className="home-btn-primary" onClick={() => {
+            if (!localStorage.getItem('customer_data')) {
+              alert('Please sign in to your account before making a reservation.');
+              navigate('/customer/login');
+              return;
+            }
+            setActiveModal('guests');
+          }}>
             RESERVATIONS
           </button>
           <button className="home-btn-secondary" onClick={() => navigate('/menu')}>
