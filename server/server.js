@@ -216,6 +216,27 @@ app.post('/api/admin/clear-db', async (req, res) => {
   }
 });
 
+// Clear log files (truncate) — use before starting a fresh collection run.
+// Logs are ephemeral on Render, but this lets you reset them on demand.
+app.post('/api/admin/clear-logs', (req, res) => {
+  if (req.query.key !== 'CY36-PHASE2') return res.status(403).json({ error: 'Invalid key' });
+  try {
+    const accessFile = path.join(__dirname, '../logs/nginx/idor_nginx.log');
+    const gtFile = path.join(__dirname, '../logs/ground_truth/app_ground_truth.csv');
+    let cleared = [];
+    if (fs.existsSync(accessFile)) { fs.truncateSync(accessFile, 0); cleared.push('access'); }
+    if (fs.existsSync(gtFile)) {
+      fs.truncateSync(gtFile, 0);
+      fs.appendFileSync(gtFile, 'timestamp,trace,template,object_id,owner_user_id,current_user_id,authorized,status\n');
+      cleared.push('ground_truth');
+    }
+    res.json({ ok: true, message: `Logs cleared: ${cleared.join(', ') || 'none found'}` });
+  } catch (err) {
+    console.error('Clear logs error:', err);
+    res.status(500).json({ error: 'Clear logs failed', details: err.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
