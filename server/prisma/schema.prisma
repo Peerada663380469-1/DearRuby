@@ -11,6 +11,7 @@ model User {
   id           Int            @id @default(autoincrement())
   name         String
   email        String         @unique
+  phone        String?
   pin_hash     String
   role         String         @default("customer")  // customer | manager
   createdAt    DateTime       @default(now())
