@@ -17,7 +17,6 @@ router.post('/register', async (req, res) => {
       data: {
         name: `${firstName} ${lastName}`.trim(),
         email,
-        phone,
         pin_hash: pinHash,
         role: 'customer'
       }
