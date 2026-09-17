@@ -149,6 +149,7 @@ export default function CustomerLogin() {
                 <input
                   type="email" placeholder="your@email.com" value={email}
                   onChange={e => setEmail(e.target.value)} required
+                  autoComplete="off"
                   style={inputStyle}
                 />
               </div>
@@ -162,6 +163,7 @@ export default function CustomerLogin() {
                 <input
                   type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password}
                   onChange={e => setPassword(e.target.value)} required minLength={4}
+                  autoComplete="new-password"
                   style={inputStyle}
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
