@@ -18,6 +18,7 @@ import reservationsRoutes from './routes/reservations.js';
 import eventsRoutes from './routes/events.js';
 import profileRoutes from './routes/profile.js';
 import { groundTruth } from './middleware/groundTruth.js';
+import prisma from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,8 +48,17 @@ const nginxFormat = ':msec :remote-addr - [:date[clf]] ":method :url HTTP/:http-
 // Express keeps writing the access log itself.
 const BEHIND_PROXY = process.env.BEHIND_PROXY === 'true';
 if (!BEHIND_PROXY) {
-  const accessLogStream = fs.createWriteStream(path.join(nginxLogDir, 'idor_nginx.log'), { flags: 'a' });
-  app.use(morgan(nginxFormat, { stream: accessLogStream }));
+  // Persist the access log into Postgres (survives Render restarts/sleeps/deploys),
+  // instead of the ephemeral filesystem. Store the fully-formatted nginx line so the
+  // download endpoint returns a byte-identical .log. Fire-and-forget: a logging error
+  // must never break or slow a real request.
+  const dbAccessStream = {
+    write: (line) => {
+      prisma.$executeRawUnsafe('INSERT INTO access_log (line) VALUES ($1)', line.replace(/\n$/, ''))
+        .catch(() => {});
+    },
+  };
+  app.use(morgan(nginxFormat, { stream: dbAccessStream }));
 }
 app.use(morgan(nginxFormat)); // Also log to console
 
@@ -118,17 +128,34 @@ app.use('/api/events', eventsRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/menu', menuRoutes);
 
-// Log Download Endpoints for Render
-app.get('/api/logs/access', (req, res) => {
-  const file = path.join(__dirname, '../logs/nginx/idor_nginx.log');
-  if (fs.existsSync(file)) res.download(file);
-  else res.status(404).json({ error: 'No access logs found yet.' });
+// Log Download Endpoints — served from the persistent Postgres tables.
+app.get('/api/logs/access', async (req, res) => {
+  try {
+    const rows = await prisma.$queryRawUnsafe('SELECT line FROM access_log ORDER BY id');
+    const body = rows.map((r) => r.line).join('\n') + (rows.length ? '\n' : '');
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="idor_nginx.log"');
+    res.send(body);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read access log', details: err.message });
+  }
 });
 
-app.get('/api/logs/groundtruth', (req, res) => {
-  const file = path.join(__dirname, '../logs/ground_truth/app_ground_truth.csv');
-  if (fs.existsSync(file)) res.download(file);
-  else res.status(404).json({ error: 'No ground truth logs found yet.' });
+app.get('/api/logs/groundtruth', async (req, res) => {
+  try {
+    const rows = await prisma.$queryRawUnsafe(
+      'SELECT ts, trace, template, object_id, owner_user_id, current_user_id, authorized, status FROM ground_truth_log ORDER BY id'
+    );
+    const header = 'timestamp,trace,template,object_id,owner_user_id,current_user_id,authorized,status';
+    const lines = rows.map((r) =>
+      [r.ts, r.trace, r.template, r.object_id, r.owner_user_id, r.current_user_id, r.authorized, r.status].join(',')
+    );
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="app_ground_truth.csv"');
+    res.send([header, ...lines].join('\n') + '\n');
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read ground truth', details: err.message });
+  }
 });
 
 // Seed Endpoint for Render (no CLI access)
@@ -216,21 +243,18 @@ app.post('/api/admin/clear-db', async (req, res) => {
   }
 });
 
-// Clear log files (truncate) — use before starting a fresh collection run.
-// Logs are ephemeral on Render, but this lets you reset them on demand.
-app.post('/api/admin/clear-logs', (req, res) => {
+// Clear logs — empties the persistent Postgres log tables (and local files if any).
+// Use before starting a fresh collection run.
+app.post('/api/admin/clear-logs', async (req, res) => {
   if (req.query.key !== 'CY36-PHASE2') return res.status(403).json({ error: 'Invalid key' });
   try {
+    await prisma.$executeRawUnsafe('TRUNCATE access_log, ground_truth_log RESTART IDENTITY');
+    // Also truncate local files if present (local docker path).
     const accessFile = path.join(__dirname, '../logs/nginx/idor_nginx.log');
     const gtFile = path.join(__dirname, '../logs/ground_truth/app_ground_truth.csv');
-    let cleared = [];
-    if (fs.existsSync(accessFile)) { fs.truncateSync(accessFile, 0); cleared.push('access'); }
-    if (fs.existsSync(gtFile)) {
-      fs.truncateSync(gtFile, 0);
-      fs.appendFileSync(gtFile, 'timestamp,trace,template,object_id,owner_user_id,current_user_id,authorized,status\n');
-      cleared.push('ground_truth');
-    }
-    res.json({ ok: true, message: `Logs cleared: ${cleared.join(', ') || 'none found'}` });
+    if (fs.existsSync(accessFile)) fs.truncateSync(accessFile, 0);
+    if (fs.existsSync(gtFile)) fs.truncateSync(gtFile, 0);
+    res.json({ ok: true, message: 'Logs cleared (DB tables access_log + ground_truth_log)' });
   } catch (err) {
     console.error('Clear logs error:', err);
     res.status(500).json({ error: 'Clear logs failed', details: err.message });
@@ -256,9 +280,16 @@ app.get('*', (req, res) => {
 // (which previously 500'd every User operation). Safe on existing tables.
 async function ensureSchema() {
   try {
-    const prisma = (await import('./db.js')).default;
     await prisma.$executeRawUnsafe('ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "phone" TEXT');
-    console.log('✅ Schema ensured (User.phone).');
+    // Persistent log tables (raw CREATE IF NOT EXISTS — not a Prisma migration, so
+    // Render's flaky runtime migrate can't leave the client querying a missing table).
+    await prisma.$executeRawUnsafe(
+      'CREATE TABLE IF NOT EXISTS access_log (id BIGSERIAL PRIMARY KEY, line TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now())'
+    );
+    await prisma.$executeRawUnsafe(
+      'CREATE TABLE IF NOT EXISTS ground_truth_log (id BIGSERIAL PRIMARY KEY, ts TEXT, trace TEXT, template TEXT, object_id TEXT, owner_user_id TEXT, current_user_id TEXT, authorized INT, status INT, created_at TIMESTAMPTZ NOT NULL DEFAULT now())'
+    );
+    console.log('✅ Schema ensured (User.phone, access_log, ground_truth_log).');
   } catch (err) {
     console.warn('⚠️  ensureSchema failed (fresh DB? will rely on migrate deploy):', err.message);
   }

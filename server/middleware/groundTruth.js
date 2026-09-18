@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import prisma from '../db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Write to POS/logs/ground_truth so it matches the docker-mounted logs tree
-// and the /api/logs/groundtruth download endpoint in server.js.
+// Local file (docker path). On Render the durable copy is the ground_truth_log
+// Postgres table written below, which survives restarts/sleeps/deploys.
 const logDir = path.join(__dirname, '../../logs/ground_truth');
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
 
@@ -24,16 +25,20 @@ export function groundTruth(req, res, next) {
     const currentUserId = req.session?.userId ?? null;
     const authorized = gt.ownerUserId === null ? 1
                      : (gt.ownerUserId === currentUserId ? 1 : 0);
-    stream.write([
-      new Date().toISOString(),
-      req.session?.trace ?? '-',
-      gt.template,
-      gt.objectId,
-      gt.ownerUserId ?? '-',
-      currentUserId ?? '-',
-      authorized,
-      res.statusCode
-    ].join(',') + '\n');
+    const ts = new Date().toISOString();
+    const trace = req.session?.trace ?? '-';
+    const objectId = String(gt.objectId);
+    const owner = gt.ownerUserId ?? '-';
+    const current = currentUserId ?? '-';
+
+    // File copy (local docker analysis)
+    stream.write([ts, trace, gt.template, objectId, owner, current, authorized, res.statusCode].join(',') + '\n');
+
+    // Durable copy in Postgres (fire-and-forget; must never break the request)
+    prisma.$executeRawUnsafe(
+      'INSERT INTO ground_truth_log (ts, trace, template, object_id, owner_user_id, current_user_id, authorized, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+      ts, trace, gt.template, objectId, String(owner), String(current), authorized, res.statusCode
+    ).catch(() => {});
   });
   next();
 }
