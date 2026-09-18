@@ -39,7 +39,15 @@ if (!fs.existsSync(nginxLogDir)) fs.mkdirSync(nginxLogDir, { recursive: true });
 morgan.token('trace', (req) => req.cookies?.trace || '-');
 morgan.token('msec', () => (Date.now() / 1000).toFixed(3));
 morgan.token('referrer', (req) => req.headers.referer || req.headers.referrer || '-');
-const nginxFormat = ':msec :remote-addr - [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":trace" :response-time';
+// Real public client IP. On Render the socket address is only its internal proxy
+// (10.x), so use the left-most X-Forwarded-For entry = the original client — needed
+// to attribute an IDOR attempt to a real source.
+morgan.token('clientip', (req) => {
+  const xff = req.headers['x-forwarded-for'];
+  if (xff) return String(xff).split(',')[0].trim();
+  return req.ip || req.socket?.remoteAddress || '-';
+});
+const nginxFormat = ':msec :clientip - [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":trace" :response-time';
 
 // When running behind the docker nginx/apache reverse proxies (local testbed),
 // those proxies own the access logs (logs/nginx, logs/apache). Skip Express's own
