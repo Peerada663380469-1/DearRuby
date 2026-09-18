@@ -90,12 +90,20 @@ router.post('/:id/cancel', requireLogin, async (req, res) => {
   }
   
   markGT(res, '/api/reservations/{id}/cancel', id, r.userId);
-  
+
   // SECURE: Ownership check
   if (r.userId !== req.session.userId && req.session.role !== 'manager') {
     return res.status(403).json({ error: 'Forbidden' });
   }
-  
+
+  // Business rule: an already-cancelled or past-date reservation can't be cancelled.
+  // The OWNER gets a legitimate 403 on their own object — a normal-traffic 403 sample
+  // (authorized stays 1 because markGT above recorded owner === current user).
+  const today = new Date().toISOString().slice(0, 10);
+  if (r.status === 'cancelled' || (r.date && r.date < today)) {
+    return res.status(403).json({ error: 'This reservation can no longer be cancelled (already cancelled or past date).' });
+  }
+
   const updated = await prisma.reservation.update({
     where: { id },
     data: { status: 'cancelled' }
